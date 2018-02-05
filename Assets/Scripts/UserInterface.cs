@@ -11,13 +11,23 @@ public enum ClassType {
 }
 
 public class UserInterface : MonoBehaviour {
-	public RectTransform ClassSelectionPanel;
-	public RectTransform NameSelectionPanel;
-	public Text NameSelectionMessage;
-	public Text NameText;
+	private RectTransform ClassSelectionPanel;
+	private RectTransform NameSelectionPanel;
+	private Text NameSelectionMessage;
+	private Text NameText;
 
 	private Action<ClassType> handleClassSelected;
 	private Action<string> handleNameSelected;
+
+	void Start()
+	{
+		ClassSelectionPanel  = GameObject.Find ("ClassSelection").GetComponent<RectTransform>();
+		NameSelectionPanel   = GameObject.Find ("UserNameSelection").GetComponent<RectTransform>();
+		NameSelectionMessage = GameObject.Find ("UserNameSelection/Message").GetComponent<Text>();
+		NameText             = GameObject.Find ("UserNameSelection/Name/NameText").GetComponent<Text>();
+
+		//NameText = (Text) this.transform.Find ("UserNameSelection/Name/NameText").gameObject;
+	}
 
 	public void ShowClassSelection(Action<ClassType> callback) {
 		handleClassSelected = callback;
