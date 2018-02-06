@@ -49,13 +49,13 @@ public class UserInterface : MonoBehaviour {
 	public void SelectClass(string type) {
 		if (handleClassSelected != null) {
 			switch (type) {
-			case "cube":
+			case "Black Pearl":
 				handleClassSelected (ClassType.SmallShip);
 				break;
-			case "cylinder":
+			case "Captian Fortune":
 				handleClassSelected (ClassType.MediumShip);
 				break;
-			case "sphere":
+			case "Royal Dutchman":
 				handleClassSelected (ClassType.LargeShip);
 				break;
 			default:
