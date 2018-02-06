@@ -1,0 +1,179 @@
+fileFormatVersion: 2
+guid: 843d127232a30b446a2e7f56326bf7ff
+timeCreated: 1517867801
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: SM_Prop_Cannon_LowDetail_01
+    100004: SM_Prop_Cannon_LowDetail_01.001
+    100006: SM_Prop_Cannon_LowDetail_01.002
+    100008: SM_Prop_Cannon_LowDetail_01.003
+    100010: SM_Prop_Cannon_LowDetail_01.004
+    100012: SM_Prop_Cannon_LowDetail_01.005
+    100014: SM_Prop_Cannon_LowDetail_01.006
+    100016: SM_Prop_Cannon_LowDetail_01.007
+    100018: SM_Prop_Cannon_LowDetail_01.008
+    100020: SM_Prop_Cannon_LowDetail_01.009
+    100022: SM_Veh_Boat_Large_Front_SailRigging_01_Pirate
+    100024: SM_Veh_Boat_Large_Front_SailUp_01_Pirate
+    100026: SM_Veh_Boat_Large_Mast_01_Pirate
+    100028: SM_Veh_Boat_Large_Mast_SailUp_01_Pirate
+    100030: SM_Veh_Boat_Large_Mast_SailUp_02_Pirate
+    100032: SM_Veh_Boat_Large_Sails_01_Pirate
+    100034: SM_Veh_Boat_Large_Sails_02_Pirate
+    100036: SM_Veh_Boat_Large_Sails_03_Pirate
+    100038: SM_Veh_Veh_Boat_Large_01_Hull_Pirate
+    100040: SMVeh__Boat_Large_Mast_02_Pirate
+    400000: //RootNode
+    400002: SM_Prop_Cannon_LowDetail_01
+    400004: SM_Prop_Cannon_LowDetail_01.001
+    400006: SM_Prop_Cannon_LowDetail_01.002
+    400008: SM_Prop_Cannon_LowDetail_01.003
+    400010: SM_Prop_Cannon_LowDetail_01.004
+    400012: SM_Prop_Cannon_LowDetail_01.005
+    400014: SM_Prop_Cannon_LowDetail_01.006
+    400016: SM_Prop_Cannon_LowDetail_01.007
+    400018: SM_Prop_Cannon_LowDetail_01.008
+    400020: SM_Prop_Cannon_LowDetail_01.009
+    400022: SM_Veh_Boat_Large_Front_SailRigging_01_Pirate
+    400024: SM_Veh_Boat_Large_Front_SailUp_01_Pirate
+    400026: SM_Veh_Boat_Large_Mast_01_Pirate
+    400028: SM_Veh_Boat_Large_Mast_SailUp_01_Pirate
+    400030: SM_Veh_Boat_Large_Mast_SailUp_02_Pirate
+    400032: SM_Veh_Boat_Large_Sails_01_Pirate
+    400034: SM_Veh_Boat_Large_Sails_02_Pirate
+    400036: SM_Veh_Boat_Large_Sails_03_Pirate
+    400038: SM_Veh_Veh_Boat_Large_01_Hull_Pirate
+    400040: SMVeh__Boat_Large_Mast_02_Pirate
+    2300000: SM_Prop_Cannon_LowDetail_01
+    2300002: SM_Prop_Cannon_LowDetail_01.001
+    2300004: SM_Prop_Cannon_LowDetail_01.002
+    2300006: SM_Prop_Cannon_LowDetail_01.003
+    2300008: SM_Prop_Cannon_LowDetail_01.004
+    2300010: SM_Prop_Cannon_LowDetail_01.005
+    2300012: SM_Prop_Cannon_LowDetail_01.006
+    2300014: SM_Prop_Cannon_LowDetail_01.007
+    2300016: SM_Prop_Cannon_LowDetail_01.008
+    2300018: SM_Prop_Cannon_LowDetail_01.009
+    2300020: SM_Veh_Boat_Large_Front_SailRigging_01_Pirate
+    2300022: SM_Veh_Boat_Large_Front_SailUp_01_Pirate
+    2300024: SM_Veh_Boat_Large_Mast_01_Pirate
+    2300026: SM_Veh_Boat_Large_Mast_SailUp_01_Pirate
+    2300028: SM_Veh_Boat_Large_Mast_SailUp_02_Pirate
+    2300030: SM_Veh_Boat_Large_Sails_01_Pirate
+    2300032: SM_Veh_Boat_Large_Sails_02_Pirate
+    2300034: SM_Veh_Boat_Large_Sails_03_Pirate
+    2300036: SM_Veh_Veh_Boat_Large_01_Hull_Pirate
+    2300038: SMVeh__Boat_Large_Mast_02_Pirate
+    3300000: SM_Prop_Cannon_LowDetail_01
+    3300002: SM_Prop_Cannon_LowDetail_01.001
+    3300004: SM_Prop_Cannon_LowDetail_01.002
+    3300006: SM_Prop_Cannon_LowDetail_01.003
+    3300008: SM_Prop_Cannon_LowDetail_01.004
+    3300010: SM_Prop_Cannon_LowDetail_01.005
+    3300012: SM_Prop_Cannon_LowDetail_01.006
+    3300014: SM_Prop_Cannon_LowDetail_01.007
+    3300016: SM_Prop_Cannon_LowDetail_01.008
+    3300018: SM_Prop_Cannon_LowDetail_01.009
+    3300020: SM_Veh_Boat_Large_Front_SailRigging_01_Pirate
+    3300022: SM_Veh_Boat_Large_Front_SailUp_01_Pirate
+    3300024: SM_Veh_Boat_Large_Mast_01_Pirate
+    3300026: SM_Veh_Boat_Large_Mast_SailUp_01_Pirate
+    3300028: SM_Veh_Boat_Large_Mast_SailUp_02_Pirate
+    3300030: SM_Veh_Boat_Large_Sails_01_Pirate
+    3300032: SM_Veh_Boat_Large_Sails_02_Pirate
+    3300034: SM_Veh_Boat_Large_Sails_03_Pirate
+    3300036: SM_Veh_Veh_Boat_Large_01_Hull_Pirate
+    3300038: SMVeh__Boat_Large_Mast_02_Pirate
+    4300000: SM_Prop_Cannon_LowDetail_01.009
+    4300002: SM_Prop_Cannon_LowDetail_01.008
+    4300004: SM_Prop_Cannon_LowDetail_01.007
+    4300006: SM_Prop_Cannon_LowDetail_01.006
+    4300008: SM_Prop_Cannon_LowDetail_01.005
+    4300010: SM_Prop_Cannon_LowDetail_01.004
+    4300012: SM_Prop_Cannon_LowDetail_01.003
+    4300014: SM_Prop_Cannon_LowDetail_01.002
+    4300016: SM_Prop_Cannon_LowDetail_01.001
+    4300018: SM_Prop_Cannon_LowDetail_01
+    4300020: SM_Veh_Veh_Boat_Large_01_Hull_Pirate
+    4300022: SM_Veh_Boat_Large_Mast_SailUp_02_Pirate
+    4300024: SM_Veh_Boat_Large_Mast_SailUp_01_Pirate
+    4300026: SM_Veh_Boat_Large_Front_SailUp_01_Pirate
+    4300028: SM_Veh_Boat_Large_Front_SailRigging_01_Pirate
+    4300030: SM_Veh_Boat_Large_Sails_03_Pirate
+    4300032: SMVeh__Boat_Large_Mast_02_Pirate
+    4300034: SM_Veh_Boat_Large_Sails_02_Pirate
+    4300036: SM_Veh_Boat_Large_Mast_01_Pirate
+    4300038: SM_Veh_Boat_Large_Sails_01_Pirate
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
