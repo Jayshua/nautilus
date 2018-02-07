@@ -13,6 +13,8 @@ public class Ship : NetworkBehaviour {
     float speed;
     [SerializeField]
     int damage;
+	[SerializeField]
+	int currentHealth;
     float backwardSpeed;
 
     [Header("Wheels")]
@@ -49,7 +51,7 @@ public class Ship : NetworkBehaviour {
     {
         backwardSpeed = speed / 2f;
 		rb = GetComponent<Rigidbody> ();
-
+		currentHealth = health;
     }
 
 	void Start()
@@ -61,11 +63,13 @@ public class Ship : NetworkBehaviour {
 	
 	void FixedUpdate ()
     {
-        movement();
+		if (!isLocalPlayer)
+			return;
+        Movement();
         Fire();
 	}
 
-    void movement()
+    void Movement()
     {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
@@ -95,20 +99,51 @@ public class Ship : NetworkBehaviour {
         if(Input.GetMouseButtonDown(0) && Time.time > elapsedTimeOnLeft)
         {
             elapsedTimeOnLeft = Time.time + cooldown;
-            StartCoroutine(InstantiateShotsOnLeft());
+			CmdShootLeft ();
         }
         if(Input.GetMouseButtonDown(1) && Time.time > elapsedTimeOnRight)
         {
             elapsedTimeOnRight = Time.time + cooldown;
-            StartCoroutine(InstantiateShotsOnRight());
+			CmdShootRight ();
         }
     }
+
+	[Command]
+	void CmdShootLeft()
+	{
+		StartCoroutine(InstantiateShotsOnLeft());
+		RpcShootLeft ();
+	}
+
+	[Command]
+	void CmdShootRight()
+	{
+		StartCoroutine(InstantiateShotsOnRight());
+		RpcShootRight ();
+	}
+
+	[ClientRpc]
+	void RpcShootLeft()
+	{
+		if (!isServer) {
+			StartCoroutine (InstantiateShotsOnLeft ());
+		}
+	}
+
+	[ClientRpc]
+	void RpcShootRight()
+	{
+		if (!isServer) {
+			StartCoroutine (InstantiateShotsOnRight ());
+		}
+	}
 
     IEnumerator InstantiateShotsOnLeft()
     {
         foreach (Transform shotPosition in shotPositionLeft)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
+			cannonBall.GetComponent<CannonBall> ().ballDamage = damage;
             cannonBall.GetComponent<Rigidbody>().velocity = -transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -120,9 +155,20 @@ public class Ship : NetworkBehaviour {
         foreach (Transform shotPosition in shotPositionRight)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
+			cannonBall.GetComponent<CannonBall> ().ballDamage = damage; 
             cannonBall.GetComponent<Rigidbody>().velocity = transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
         StopCoroutine(InstantiateShotsOnRight());
     }
+		
+	public void TakeDamge(int amount)
+	{
+		if (currentHealth != 0) {
+			currentHealth -= amount;
+		} else {
+			Destroy (this.gameObject);
+		}
+		print (currentHealth);
+	}
 }
