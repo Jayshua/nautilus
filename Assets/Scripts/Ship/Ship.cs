@@ -55,7 +55,7 @@ public class Ship : NetworkBehaviour {
 	void Start()
 	{
 		if (isLocalPlayer) {
-			CameraFollow.player = this.gameObject.transform;
+			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
 		}
 	}
 	
