@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour {
 
-	public Transform player;
+	public static Transform player;
 
 	// Use this for initialization
 	void Awake () {
-		player = GameObject.FindWithTag ("Player").transform;
 	}
 	
 	// Update is called once per frame

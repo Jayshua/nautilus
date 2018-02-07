@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Ship : MonoBehaviour {
+public class Ship : NetworkBehaviour {
 
     [Header("Ship Stat")]
     [SerializeField]
@@ -47,8 +48,16 @@ public class Ship : MonoBehaviour {
     void Awake()
     {
         backwardSpeed = speed / 2f;
-        rb = GetComponent<Rigidbody>();
+		rb = GetComponent<Rigidbody> ();
+
     }
+
+	void Start()
+	{
+		if (isLocalPlayer) {
+			CameraFollow.player = this.gameObject.transform;
+		}
+	}
 	
 	void FixedUpdate ()
     {
