@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour {
 	void LateUpdate () {
 		if (player != null) {
 			transform.position = player.position;
-			transform.Translate (0,40,-35, Space.World);
+			transform.Translate (0,100,-100, Space.World);
 			transform.LookAt (player);
 		}
 	}

@@ -87,7 +87,7 @@ public class Ship : NetworkBehaviour {
         }
         else
         {
-            rb.drag = 0.5f;
+            rb.drag = 0.25f;
         }
 
         wheelFR.steerAngle = moveHorizontal * steerMultiplier;
