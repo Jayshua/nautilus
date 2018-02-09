@@ -13,6 +13,7 @@ public enum ClassType {
 public class UserInterface : MonoBehaviour {
 	private RectTransform ClassSelectionPanel;
 	private RectTransform NameSelectionPanel;
+	private RectTransform GuiPanel;
 	private Text NameSelectionMessage;
 	private Text NameText;
 
@@ -22,6 +23,7 @@ public class UserInterface : MonoBehaviour {
 	void Start()
 	{
 		ClassSelectionPanel  = GameObject.Find ("ClassSelection").GetComponent<RectTransform>();
+		GuiPanel             = GameObject.Find ("GuiPanel").GetComponent<RectTransform>();
 		NameSelectionPanel   = GameObject.Find ("UserNameSelection").GetComponent<RectTransform>();
 		NameSelectionMessage = GameObject.Find ("UserNameSelection/Message").GetComponent<Text>();
 		NameText             = GameObject.Find ("UserNameSelection/Name/NameText").GetComponent<Text>();
@@ -67,11 +69,20 @@ public class UserInterface : MonoBehaviour {
 		}
 
 		ClassSelectionPanel.anchoredPosition = new Vector2 (0, -10000);
+		ShowGUI ();
 	}
 
 	public void Submit() {
 		if (handleNameSelected != null) {
 			handleNameSelected (NameText.text);
 		}
+	}
+
+	public void ShowGUI() {
+		GuiPanel.anchoredPosition = new Vector2 (0, 0);
+	}
+
+	public void HideGUI() {
+		GuiPanel.anchoredPosition = new Vector2 (0, -10000);
 	}
 }
