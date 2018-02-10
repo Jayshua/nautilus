@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,13 +9,13 @@ public class Ship : NetworkBehaviour {
 
     [Header("Ship Stat")]
     [SerializeField]
-    int health;
+    float health;
     [SerializeField]
     float speed;
     [SerializeField]
-    int damage;
+    float damage;
 	[SerializeField]
-	int currentHealth;
+	float currentHealth;
     float backwardSpeed;
 
     [Header("Wheels")]
@@ -46,6 +47,8 @@ public class Ship : NetworkBehaviour {
     float elapsedTimeOnLeft = 0f;
 
     Rigidbody rb;
+	RectTransform healthBar;
+	UserInterface userInterface;
 
     void Awake()
     {
@@ -56,6 +59,8 @@ public class Ship : NetworkBehaviour {
 
 	void Start()
 	{
+		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
+		healthBar = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		if (isLocalPlayer) {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
 		}
@@ -162,13 +167,18 @@ public class Ship : NetworkBehaviour {
         StopCoroutine(InstantiateShotsOnRight());
     }
 		
-	public void TakeDamge(int amount)
+	public void TakeDamge(float amount)
 	{
 		if (currentHealth != 0) {
 			currentHealth -= amount;
+
+			if (isLocalPlayer) {
+				healthBar.sizeDelta = new Vector2 (currentHealth / health * 1145, healthBar.sizeDelta.y);
+			}
+
 		} else {
 			Destroy (this.gameObject);
+			userInterface.HideGUI ();
 		}
-		print (currentHealth);
 	}
 }
