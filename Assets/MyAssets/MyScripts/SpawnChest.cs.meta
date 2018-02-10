@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f94a07dc7d181534a93f888f2607f7d4
+timeCreated: 1510870401
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - SpherePrefab: {fileID: 1890803558635062, guid: 2671aa955a452bf48a1b011118762e01,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
