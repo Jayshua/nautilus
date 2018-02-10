@@ -11,9 +11,9 @@ public enum ClassType {
 }
 
 public class UserInterface : MonoBehaviour {
-	private RectTransform ClassSelectionPanel;
-	private RectTransform NameSelectionPanel;
-	private RectTransform GuiPanel;
+	private GameObject ClassSelectionPanel;
+	private GameObject NameSelectionPanel;
+	private GameObject GuiPanel;
 	private Text NameSelectionMessage;
 	private Text NameText;
 
@@ -22,24 +22,27 @@ public class UserInterface : MonoBehaviour {
 
 	void Start()
 	{
-		ClassSelectionPanel  = GameObject.Find ("ClassSelection").GetComponent<RectTransform>();
-		GuiPanel             = GameObject.Find ("GuiPanel").GetComponent<RectTransform>();
-		NameSelectionPanel   = GameObject.Find ("UserNameSelection").GetComponent<RectTransform>();
+		ClassSelectionPanel  = GameObject.Find ("ClassSelection");
+		GuiPanel             = GameObject.Find ("GuiPanel");
+		NameSelectionPanel   = GameObject.Find ("UserNameSelection");
 		NameSelectionMessage = GameObject.Find ("UserNameSelection/Message").GetComponent<Text>();
 		NameText             = GameObject.Find ("UserNameSelection/Name/NameText").GetComponent<Text>();
 
+		ClassSelectionPanel.SetActive(false);
+		GuiPanel.SetActive(false);
+		NameSelectionPanel.SetActive(false);
 		//NameText = (Text) this.transform.Find ("UserNameSelection/Name/NameText").gameObject;
 	}
 
 	public void ShowClassSelection(Action<ClassType> callback) {
 		handleClassSelected = callback;
-		ClassSelectionPanel.anchoredPosition = new Vector2 (0, 0);
-		NameSelectionPanel.anchoredPosition = new Vector2 (0, -10000);
+		ClassSelectionPanel.SetActive(true);
+		NameSelectionPanel.SetActive(false);
 	}
 
 	public void ShowNameSelection(Action<string> callback, bool isNameTaken) {
 		handleNameSelected = callback;
-		NameSelectionPanel.anchoredPosition = new Vector2 (0, 0);
+		NameSelectionPanel.SetActive(true);
 
 		if (isNameTaken) {
 			NameSelectionMessage.text = "Name was taken. Please try again.";
@@ -68,7 +71,7 @@ public class UserInterface : MonoBehaviour {
 			handleClassSelected = null;
 		}
 
-		ClassSelectionPanel.anchoredPosition = new Vector2 (0, -10000);
+		ClassSelectionPanel.SetActive(false);
 		ShowGUI ();
 	}
 
@@ -79,10 +82,10 @@ public class UserInterface : MonoBehaviour {
 	}
 
 	public void ShowGUI() {
-		GuiPanel.anchoredPosition = new Vector2 (0, 0);
+		GuiPanel.SetActive(true);
 	}
 
 	public void HideGUI() {
-		GuiPanel.anchoredPosition = new Vector2 (0, -10000);
+		GuiPanel.SetActive(false);
 	}
 }
