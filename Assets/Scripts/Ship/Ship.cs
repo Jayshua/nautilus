@@ -169,7 +169,7 @@ public class Ship : NetworkBehaviour {
 		
 	public void TakeDamge(float amount)
 	{
-		if (currentHealth != 0) {
+		if (currentHealth > 0f) {
 			currentHealth -= amount;
 
 			if (isLocalPlayer) {
