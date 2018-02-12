@@ -11,10 +11,12 @@ public class NautilusServer
 {
 	List<Player> activePlayers = new List<Player> ();
 	GameObject[] shipPrefabs;
+	GameObject playerPrefab;
 
-	public NautilusServer (GameObject[] shipPrefabs)
+	public NautilusServer (GameObject[] shipPrefabs, GameObject playerPrefab)
 	{
 		this.shipPrefabs = shipPrefabs;
+		this.playerPrefab = playerPrefab;
 		NetworkServer.RegisterHandler (MsgTypes.SelectName, HandleNameSelected);
 		NetworkServer.RegisterHandler (MsgTypes.SelectClass, HandleClassSelected);
 	}
@@ -24,7 +26,7 @@ public class NautilusServer
 	public void ClientDisconnected(NetworkConnection disconnectedConnection) {
 		activePlayers = activePlayers
 			.Where (player => {
-				if (player.connection == disconnectedConnection) {
+				if (player.connectionToClient == disconnectedConnection) {
 					player.Destroy();
 					return false;
 				} else {
@@ -41,7 +43,11 @@ public class NautilusServer
 		bool nameUsed = activePlayers.Any (player => player.name.Equals (name));
 
 		if (!nameUsed) {
-			activePlayers.Add (new Player (name, nameMessage.conn));
+			var newPlayer = GameObject.Instantiate (playerPrefab);
+			NetworkServer.Spawn (newPlayer);
+			var playerObject = newPlayer.GetComponent<Player> ();
+			playerObject.Setup (name);
+			activePlayers.Add (playerObject);
 		}
 
 		nameMessage.conn.Send (
@@ -69,6 +75,6 @@ public class NautilusServer
 		}
 
 		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		activePlayers.First (p => p.connection == prefabMessage.conn).playerObject = player;
+		activePlayers.First (p => p.connectionToClient == prefabMessage.conn).playerObject = player;
 	}
 }
