@@ -51,7 +51,15 @@ public class UserInterface : MonoBehaviour {
 		}
 	}
 
+
+	public void ShowGUI() {
+		NameSelectionPanel.SetActive (false);
+		ClassSelectionPanel.SetActive (false);
+		GuiPanel.SetActive(true);
+	}
+
 	public void SelectClass(string type) {
+		ShowGUI ();
 		if (handleClassSelected != null) {
 			switch (type) {
 			case "Black Pearl":
@@ -70,22 +78,11 @@ public class UserInterface : MonoBehaviour {
 
 			handleClassSelected = null;
 		}
-
-		ClassSelectionPanel.SetActive(false);
-		ShowGUI ();
 	}
 
 	public void Submit() {
 		if (handleNameSelected != null) {
 			handleNameSelected (NameText.text);
 		}
-	}
-
-	public void ShowGUI() {
-		GuiPanel.SetActive(true);
-	}
-
-	public void HideGUI() {
-		GuiPanel.SetActive(false);
 	}
 }

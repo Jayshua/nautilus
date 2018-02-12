@@ -178,7 +178,6 @@ public class Ship : NetworkBehaviour {
 
 		} else {
 			Destroy (this.gameObject);
-			userInterface.HideGUI ();
 		}
 	}
 }

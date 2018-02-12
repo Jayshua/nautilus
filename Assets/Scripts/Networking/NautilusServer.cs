@@ -75,6 +75,6 @@ public class NautilusServer
 		}
 
 		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		activePlayers.First (p => p.connectionToClient == prefabMessage.conn).playerObject = player;
+		activePlayers.First (p => p.GetComponent<NetworkIdentity> ().connectionToClient == prefabMessage.conn);
 	}
 }
