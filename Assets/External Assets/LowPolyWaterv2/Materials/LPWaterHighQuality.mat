@@ -40,7 +40,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Absorption: 20
+    - _Absorption: 40
     - _BumpScale: 35
     - _BumpScale_: 35
     - _BumpSpeed: 0.2
@@ -62,10 +62,10 @@ Material:
     - _Length: 3
     - _LightAbs: 1
     - _NormalOffset: 1
-    - _Opacity: 0.5
+    - _Opacity: 0.2
     - _PointLights: 0
-    - _RHeight: 0.25
-    - _RHeight_: 0.25
+    - _RHeight: 1
+    - _RHeight_: 1
     - _RSpeed: 0.5
     - _RSpeed_: 0.5
     - _Reflection: 1.2
@@ -88,7 +88,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 0, g: 1, b: 0.751724, a: 1}
-    - _DeepColor: {r: 0.023248274, g: 0.25557056, b: 0.31617647, a: 1}
+    - _DeepColor: {r: 0, g: 0.3965516, b: 0.5, a: 1}
     - _Direction_: {r: -1, g: -0.00000008742278, b: -0.6, a: -0.000000052453668}
     - _FresColor: {r: 0.525519, g: 0.72743106, b: 0.7941176, a: 1}
     - _ShoreColor: {r: 1, g: 1, b: 1, a: 1}
