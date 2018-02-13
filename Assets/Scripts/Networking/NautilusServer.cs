@@ -46,7 +46,7 @@ public class NautilusServer
 			var newPlayer = GameObject.Instantiate (playerPrefab);
 			NetworkServer.Spawn (newPlayer);
 			var playerObject = newPlayer.GetComponent<Player> ();
-			playerObject.Setup (name);
+			playerObject.Setup (name, nameMessage.conn);
 			activePlayers.Add (playerObject);
 		}
 
@@ -75,6 +75,6 @@ public class NautilusServer
 		}
 
 		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		activePlayers.First (p => p.GetComponent<NetworkIdentity> ().connectionToClient == prefabMessage.conn);
+		activePlayers.First ((Player p) => p.playerConnection == prefabMessage.conn).playerObject = player;
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -7,7 +8,12 @@ using UnityEngine.Networking;
 public class Player : NetworkBehaviour
 {
 	public string playerName { get; private set; }
+	public NetworkConnection playerConnection;
 	public GameObject playerObject {get; set;}
+
+	public List<PowerUps> GameItems = new List<PowerUps>() {
+		PowerUps.Spyglass, PowerUps.PowderKeg, PowerUps.CannonShot, PowerUps.LemonJuice, PowerUps.WindBucket
+	};
 
 	[SyncVar]
 	private int Gold;
@@ -15,9 +21,10 @@ public class Player : NetworkBehaviour
 	private int Fame;
 
 	[Server]
-	public void Setup(string name) {
-		if (playerName == null) {
-			this.playerName = name;
+	public void Setup(string playerName, NetworkConnection playerConnection) {
+		if (this.playerName == null || this.playerConnection == null ) {
+			this.playerName = playerName;
+			this.playerConnection = playerConnection;
 		} else {
 			throw new Exception ("Called setup on an Player object that has already been setup. The player was: " + playerName);
 		}

@@ -6,6 +6,11 @@ using UnityEngine.Networking;
 
 public class Chest : MonoBehaviour {
 
+	public int gold,
+			   fame;
+
+	List<PowerUps> ChestPowerups = new List<PowerUps>();
+
 	public event Action OnDestroy;
 
 	[SerializeField]
@@ -22,6 +27,8 @@ public class Chest : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Debug.Log (gold);
+		Debug.Log (fame);
 		startingY = transform.position.y;
 		transform.Rotate (transform.up, UnityEngine.Random.Range (0f, 360f));
 		StartCoroutine (Spin ());

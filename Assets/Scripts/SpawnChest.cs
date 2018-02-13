@@ -29,6 +29,8 @@ public class SpawnChest : NetworkBehaviour {
 			if (spotUsed[currentIndex] == false){ //
 				GameObject chest = (GameObject)Instantiate (ChestPrefab, ChestSpawnLocations [currentIndex].position, transform.rotation); // Create and place a chest
 				Chest chestScript = chest.GetComponent<Chest> (); // When a chest is hit
+				chestScript.gold = 50;
+				chestScript.fame = 50;
 				int current = currentIndex; // 
 				chestScript.OnDestroy += () => spotUsed [current] = false; // When a chest is destroyed
 				NetworkServer.Spawn (chest); // Spawn a chest object
