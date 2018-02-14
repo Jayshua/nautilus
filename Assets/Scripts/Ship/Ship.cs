@@ -167,7 +167,7 @@ public class Ship : NetworkBehaviour {
         StopCoroutine(InstantiateShotsOnRight());
     }
 		
-	public void TakeDamge(float amount)
+	public void TakeDamage(float amount)
 	{
 		if (currentHealth > 0f) {
 			currentHealth -= amount;
