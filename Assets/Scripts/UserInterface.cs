@@ -31,7 +31,6 @@ public class UserInterface : MonoBehaviour {
 		ClassSelectionPanel.SetActive(false);
 		GuiPanel.SetActive(false);
 		NameSelectionPanel.SetActive(false);
-		//NameText = (Text) this.transform.Find ("UserNameSelection/Name/NameText").gameObject;
 	}
 
 	public void ShowClassSelection(Action<ClassType> callback) {
