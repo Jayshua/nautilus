@@ -64,11 +64,20 @@ public class Chest : MonoBehaviour {
 		}
 	}
 
-	void OnTriggerEnter(Collider ship){
+	void OnTriggerEnter(Collider collision){
 		if (OnDestroy != null) {
 			OnDestroy();
 		}
-		Destroy (this.gameObject);
-	}
 
+		if (collision.gameObject.tag == "Player") {
+
+			Ship ship = collision.GetComponent<Ship> ();
+
+			ship.player.Gold += gold;
+			ship.player.Fame += fame;
+			ship.player.Inventory.AddRange (ChestPowerups);
+
+			Destroy (this.gameObject);
+		}
+	}
 }

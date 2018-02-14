@@ -7,6 +7,8 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody))]
 public class Ship : NetworkBehaviour {
 
+	public Player player;
+
     [Header("Ship Stat")]
     [SerializeField]
     float health;
