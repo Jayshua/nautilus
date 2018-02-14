@@ -49,6 +49,7 @@ public class CameraFollow : MonoBehaviour {
 		// Always look at the target
 		transform.LookAt(player);
 	}
+
 	public void PlayerCreated(Transform player) {
 		this.player = player;
 	}

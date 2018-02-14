@@ -63,6 +63,7 @@ public class Ship : NetworkBehaviour {
 		healthBar = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		if (isLocalPlayer) {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
+			GameObject.Find ("Compass").GetComponent<Compass> ().PlayerCreated (this.transform);
 		}
 	}
 	
