@@ -9,7 +9,7 @@ using System.Linq;
 // Keeps track of the active players and will start and end events.
 public class NautilusServer
 {
-	List<Player> activePlayers = new List<Player> ();
+	public List<Player> activePlayers = new List<Player> ();
 	GameObject[] shipPrefabs;
 	GameObject playerPrefab;
 
@@ -75,6 +75,10 @@ public class NautilusServer
 		}
 
 		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		activePlayers.First ((Player p) => p.playerConnection == prefabMessage.conn).playerObject = player;
+		Player currentPlayer = activePlayers.First ((Player p) => p.playerConnection == prefabMessage.conn);
+		currentPlayer.playerObject = player;
+
+		Ship shipScript = currentPlayer.playerObject.GetComponent<Ship> ();
+		shipScript.player = currentPlayer;
 	}
 }

@@ -11,14 +11,14 @@ public class Player : NetworkBehaviour
 	public NetworkConnection playerConnection;
 	public GameObject playerObject {get; set;}
 
-	public List<PowerUps> GameItems = new List<PowerUps>() {
+	public List<PowerUps> Inventory = new List<PowerUps>() {
 		PowerUps.Spyglass, PowerUps.PowderKeg, PowerUps.CannonShot, PowerUps.LemonJuice, PowerUps.WindBucket
 	};
 
 	[SyncVar]
-	private int Gold;
+	public int Gold;
 	[SyncVar]
-	private int Fame;
+	public int Fame;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
