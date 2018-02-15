@@ -62,11 +62,12 @@ public class Ship : NetworkBehaviour {
 	void Start()
 	{
 		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		healthBar = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		if (isLocalPlayer) {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
 			GameObject.Find ("Compass").GetComponent<Compass> ().PlayerCreated (this.transform);
 		}
+
+
 	}
 	
 	void FixedUpdate ()
@@ -176,7 +177,7 @@ public class Ship : NetworkBehaviour {
 			currentHealth -= amount;
 
 			if (isLocalPlayer) {
-				healthBar.sizeDelta = new Vector2 (currentHealth / health * 1145, healthBar.sizeDelta.y);
+				userInterface.UpdateHealth (currentHealth / health);
 			}
 
 		} else {

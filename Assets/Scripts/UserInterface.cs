@@ -9,13 +9,17 @@ public enum ClassType {
 	MediumShip,
 	SmallShip
 }
-
+	
 public class UserInterface : MonoBehaviour {
+
+	const int HEALTHBARWIDTH = 1145;
+
 	private GameObject ClassSelectionPanel;
 	private GameObject NameSelectionPanel;
 	private GameObject GuiPanel;
 	private Text NameSelectionMessage;
 	private Text NameText;
+	private RectTransform healthBar;
 
 	private Action<ClassType> handleClassSelected;
 	private Action<string> handleNameSelected;
@@ -27,7 +31,7 @@ public class UserInterface : MonoBehaviour {
 		NameSelectionPanel   = GameObject.Find ("UserNameSelection");
 		NameSelectionMessage = GameObject.Find ("UserNameSelection/Message").GetComponent<Text>();
 		NameText             = GameObject.Find ("UserNameSelection/Name/NameText").GetComponent<Text>();
-
+		healthBar            = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		ClassSelectionPanel.SetActive(false);
 		GuiPanel.SetActive(false);
 		NameSelectionPanel.SetActive(false);
@@ -83,5 +87,10 @@ public class UserInterface : MonoBehaviour {
 		if (handleNameSelected != null) {
 			handleNameSelected (NameText.text);
 		}
+	}
+
+	public void UpdateHealth (float health)
+	{
+		healthBar.sizeDelta = new Vector2 (health * HEALTHBARWIDTH, healthBar.sizeDelta.y);
 	}
 }
