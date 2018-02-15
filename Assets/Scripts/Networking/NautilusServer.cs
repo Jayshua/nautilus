@@ -80,5 +80,8 @@ public class NautilusServer
 
 		Ship shipScript = currentPlayer.playerObject.GetComponent<Ship> ();
 		shipScript.player = currentPlayer;
+
+		//UserInterface interfaceScript = currentPlayer.playerObject.GetComponent<UserInterface> ();
+		//interfaceScript. = currentPlayer;
 	}
 }

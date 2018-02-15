@@ -17,9 +17,7 @@ public class SpawnChest : NetworkBehaviour {
 
 		spotUsed = new bool[ChestSpawnLocations.Length]; // Assign the number of spawn locations to the number of spots used
 
-		if (isServer) { // Check to see if this is the server
-			StartCoroutine (SpawnChests ()); // Start coroutine to spawn chests
-		}
+		StartCoroutine (SpawnChests ()); // Start coroutine to spawn chests
 	}
 
 	IEnumerator SpawnChests() {
@@ -29,7 +27,7 @@ public class SpawnChest : NetworkBehaviour {
 
 			if (spotUsed[currentIndex] == false){ //
 				GameObject chest = (GameObject)Instantiate (ChestPrefab, ChestSpawnLocations [currentIndex].position, transform.rotation); // Create and place a chest
-				Chest chestScript = chest.GetComponent<Chest> (); // When a chest is hit
+				Chest chestScript = chest.GetComponent<Chest> ();
 				chestScript.gold = Random.Range(25, 250); // Give the player a random amount of gold
 				chestScript.fame = chestScript.gold; // Give the player the same amount of fame as gold
 				chestScript.ChestPowerups.Add((PowerUps) Random.Range(0,5));

@@ -14,12 +14,16 @@ public class UserInterface : MonoBehaviour {
 
 	const int HEALTHBARWIDTH = 1145;
 
-	private GameObject ClassSelectionPanel;
-	private GameObject NameSelectionPanel;
-	private GameObject GuiPanel;
-	private Text NameSelectionMessage;
-	private Text NameText;
-	private RectTransform healthBar;
+	GameObject ClassSelectionPanel;
+	GameObject NameSelectionPanel;
+	GameObject GuiPanel;
+	Text NameSelectionMessage;
+	Text NameText;
+	RectTransform healthBar;
+	Text goldText;
+	Text fameText;
+
+	Player playerClass;
 
 	private Action<ClassType> handleClassSelected;
 	private Action<string> handleNameSelected;
@@ -32,11 +36,21 @@ public class UserInterface : MonoBehaviour {
 		NameSelectionMessage = GameObject.Find ("UserNameSelection/Message").GetComponent<Text>();
 		NameText             = GameObject.Find ("UserNameSelection/Name/NameText").GetComponent<Text>();
 		healthBar            = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
+		goldText 			 = GameObject.Find ("GoldText").GetComponent<Text> ();
+		fameText 			 = GameObject.Find ("FameText").GetComponent<Text> ();
 		ClassSelectionPanel.SetActive(false);
 		GuiPanel.SetActive(false);
 		NameSelectionPanel.SetActive(false);
 	}
 
+	void Update()
+	{
+		if (playerClass != null) {
+			UpdateGold (playerClass.Gold);
+			UpdateFame (playerClass.Fame);
+		}
+	}
+		
 	public void ShowClassSelection(Action<ClassType> callback) {
 		handleClassSelected = callback;
 		ClassSelectionPanel.SetActive(true);
@@ -53,8 +67,7 @@ public class UserInterface : MonoBehaviour {
 			NameSelectionMessage.text = "";
 		}
 	}
-
-
+		
 	public void ShowGUI() {
 		NameSelectionPanel.SetActive (false);
 		ClassSelectionPanel.SetActive (false);
@@ -92,5 +105,20 @@ public class UserInterface : MonoBehaviour {
 	public void UpdateHealth (float health)
 	{
 		healthBar.sizeDelta = new Vector2 (health * HEALTHBARWIDTH, healthBar.sizeDelta.y);
+	}
+
+	public void UpdateGold (int gold)
+	{
+		goldText.text = gold.ToString();
+	}
+
+	public void UpdateFame (int fame)
+	{
+		fameText.text = fame.ToString ();
+	}
+
+	public void PlayerConnected(Player player)
+	{
+		playerClass = player;
 	}
 }

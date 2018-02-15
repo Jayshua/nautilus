@@ -184,4 +184,16 @@ public class Ship : NetworkBehaviour {
 			Destroy (this.gameObject);
 		}
 	}
+
+	void OnTriggerEnter (Collider collision)
+	{
+		if (collision.gameObject.tag == "Chest") {
+
+			Chest chest = collision.gameObject.GetComponent<Chest>();
+
+			player.Gold += chest.gold;
+			player.Fame += chest.fame;
+			player.Inventory.AddRange (chest.ChestPowerups);
+		}
+	}
 }

@@ -69,15 +69,8 @@ public class Chest : MonoBehaviour
 		if (OnDestroy != null) {
 			OnDestroy ();
 		}
-
+			
 		if (collision.gameObject.tag == "Player") {
-
-			Ship ship = collision.GetComponent<Ship> ();
-
-			ship.player.Gold += gold;
-			ship.player.Fame += fame;
-			ship.player.Inventory.AddRange (ChestPowerups);
-
 			Destroy (this.gameObject);
 		}
 	}
