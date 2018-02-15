@@ -1,4 +1,3 @@
-//using System.Collections.Generic;
 // Prefab for coin zone
 // - Detects when player enters and gives gold/fame
 // - Player Enter Event
@@ -7,18 +6,45 @@
 // NautilusServer
 // - OnPlayerJoin event
 
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-//public class GoldRush : IEvent {
-	//List<CoinZone> zones;
+public class GoldRush : MonoBehaviour, IEvent {
+	public GameObject zonePrefab;
+	public GameObject chestPrefab;
 
-	//public override void Initialize(NautilusServer server) {
+	List<Zone> zones;
+	public event Action OnEnd;
+
+	public void Initialize(NautilusServer server) {
+		int zoneCount = server.activePlayers.Count / 4;
+
+		var zoneSpawnLocations = new HashSet<GameObject>();
+		while (zoneSpawnLocations.Count < zoneCount) {
+			var newLocation = this.transform.GetChild(UnityEngine.Random.Range(0, this.transform.childCount));
+			zoneSpawnLocations.Add (newLocation);
+		}
+
+		foreach (var zoneSpawn in zoneSpawnLocations) {
+			var newZone = GameObject.Instantiate (zonePrefab, zoneSpawn.transform.position);
+			var newChest = GameObject.Instantiate (chestPrefab, zoneSpawn.transform.position).GetComponent<Chest>();
+			newChest.gold = 500;
+			this.zones.Add (newZone);
+		}
+
+		foreach (var player in server.activePlayers) {
+			player.SendNotification ("Gold Rush is beginning!");
+		}
+
+		server.OnPlayerJoin += HandlePlayerJoin;
+
 		// Create coin zones
 		// Create the chests
-		// Give players compass markers
 		// Notify players
 		// Listen for new players
 		// Listen for lost players
-	//}
+	}
 
 	// Ongoing:
 	// - Update compass markers
@@ -29,4 +55,4 @@
 	// - Remove compass markers
 	// - Remove player messages
 	// - Remove event listeners on the server
-//}
+}

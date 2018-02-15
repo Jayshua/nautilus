@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// Represents a player on the Server.
 // At the moment, this class should only be used on the server.
 public class Player : NetworkBehaviour
 {
@@ -29,6 +28,14 @@ public class Player : NetworkBehaviour
 			throw new Exception ("Called setup on an Player object that has already been setup. The player was: " + playerName);
 		}
 	}
+
+	[Server]
+	public void SendNotification(string notification) {
+		
+	}
+
+	[TargetRpc]
+	private void Targeted
 
 	public void Destroy() {
 		GameObject.Destroy (playerObject);
