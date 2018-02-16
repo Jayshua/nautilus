@@ -17,14 +17,19 @@ public class UserInterface : MonoBehaviour {
 	GameObject ClassSelectionPanel;
 	GameObject NameSelectionPanel;
 	GameObject GuiPanel;
+	RectTransform healthBar;
 	Text NameSelectionMessage;
 	Text NameText;
-	RectTransform healthBar;
 	Text goldText;
 	Text fameText;
+	Text cannonShotText;
+	Text powderKegText;
+	Text spyglassText;
+	Text lemonJuiceText;
+	Text windBucketText;
 
 	private Action<ClassType> handleClassSelected;
-	private Action<string> handleNameSelected;
+	private Action<string>    handleNameSelected;
 
 	void Start()
 	{
@@ -36,14 +41,15 @@ public class UserInterface : MonoBehaviour {
 		healthBar            = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		goldText 			 = GameObject.Find ("GoldText").GetComponent<Text> ();
 		fameText 			 = GameObject.Find ("FameText").GetComponent<Text> ();
+		cannonShotText       = GameObject.Find ("CannonShotQuantity").GetComponent<Text> ();
+		powderKegText        = GameObject.Find ("PowderKegQuantity").GetComponent<Text> ();
+		spyglassText         = GameObject.Find ("SpyglassQuantity").GetComponent<Text> ();
+		lemonJuiceText       = GameObject.Find ("LemonJuiceQuantity").GetComponent<Text> ();
+		windBucketText       = GameObject.Find ("WindBucketQuantity").GetComponent<Text> ();
+
 		ClassSelectionPanel.SetActive(false);
 		GuiPanel.SetActive(false);
 		NameSelectionPanel.SetActive(false);
-	}
-
-	void Update()
-	{
-
 	}
 		
 	public void ShowClassSelection(Action<ClassType> callback) {
@@ -112,25 +118,29 @@ public class UserInterface : MonoBehaviour {
 		fameText.text = player.Fame.ToString ();
 	}
 
+	public void UpdatePowerUps(Player player)
+	{
+		Debug.Log (player.Inventory.Count);
+	}
+
 	public void PlayerConnected(Player player)
 	{
 		Player playerClass = player;
 		player.OnGoldChange   += UpdateGold;
 		player.OnFameChange   += UpdateFame;
+		player.OnAddPowerups  += UpdatePowerUps;
 		player.OnDeath        += HandlePlayerDeath;
 		player.OnLogout       += HandlePlayerLogout;
 	}
 
 	void HandlePlayerLogout(Player player) {
 		player.OnGoldChange -= UpdateGold;
+		player.OnFameChange -= UpdateFame;
+		player.OnDeath      -= HandlePlayerDeath;
+		player.OnLogout     -= HandlePlayerLogout;
 	}
 
 	void HandlePlayerDeath(Player player) {
 		
 	}
-
-	void HandleHealthChange(Player player) {
-
-	}
-
 }
