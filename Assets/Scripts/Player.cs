@@ -70,6 +70,7 @@ public class Player : NetworkBehaviour
 	private void TargetSetAuthority(NetworkConnection connection) {
 		var GUI = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
 		GUI.PlayerConnected (this);
+		GUI.ItemUsed += UsePowerUp;
 	}
 
 	[Server]
@@ -89,9 +90,17 @@ public class Player : NetworkBehaviour
 		GameObject.Destroy (this);
 	}
 
-	public void ChangePowerUps(List <PowerUps> powerUps)
+	public void AddPowerUps(List <PowerUps> powerUps)
 	{
 		Inventory.AddRange (powerUps);
 		OnChangePowerups (Inventory);
+	}
+
+	public void UsePowerUp(PowerUps powerUp)
+	{
+		if (Inventory.Remove (powerUp)) {
+			OnChangePowerups (Inventory);
+
+		}
 	}
 }

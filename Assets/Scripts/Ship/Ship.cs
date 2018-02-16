@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody))]
 public class Ship : NetworkBehaviour {
 
+	const float LEMON_JUICE_MULTIPLIER = .25f;
 	public Player player;
 
     [Header("Ship Stat")]
@@ -196,13 +197,13 @@ public class Ship : NetworkBehaviour {
 
 			player.Gold += chest.gold;
 			player.Fame += chest.fame;
-			player.ChangePowerUps(chest.ChestPowerups);
+			player.AddPowerUps(chest.ChestPowerups);
 		}
 	}
 
 	public void LemonJuiceHeal()
 	{
-		currentHealth *= .25f;
+		currentHealth *= LEMON_JUICE_MULTIPLIER;
 
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;

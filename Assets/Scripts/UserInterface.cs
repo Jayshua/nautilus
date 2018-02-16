@@ -121,6 +121,8 @@ public class UserInterface : MonoBehaviour {
 		fameText.text = player.Fame.ToString ();
 	}
 
+
+
 	void HandleNotification(string notification)
 	{
 		notificationText.text = notification;
@@ -148,7 +150,7 @@ public class UserInterface : MonoBehaviour {
 		player.OnChangePowerups += UpdatePowerUps;
 		player.OnDeath          += HandlePlayerDeath;
 		player.OnLogout         += HandlePlayerLogout;
-		player.OnNotification += HandleNotification;
+		player.OnNotification   += HandleNotification;
 	}
 
 	void HandlePlayerLogout(Player player) {
@@ -157,6 +159,31 @@ public class UserInterface : MonoBehaviour {
 		player.OnDeath      -= HandlePlayerDeath;
 		player.OnLogout     -= HandlePlayerLogout;
 		player.OnNotification -= HandleNotification;
+	}
+
+	public void SelectPowerUp(string type) {
+		if (ItemUsed != null) {
+			switch (type) {
+			case "Spyglass":
+				ItemUsed (PowerUps.Spyglass);
+				break;
+			case "PowderKeg":
+				ItemUsed (PowerUps.PowderKeg);
+				break;
+			case "CannonShot":
+				ItemUsed (PowerUps.CannonShot);
+				break;
+			case "LemonJuice":
+				ItemUsed (PowerUps.LemonJuice);
+				break;
+			case "WindBucket":
+				ItemUsed (PowerUps.WindBucket);
+				break;
+			default:
+				Debug.Log ("Unknown powerup type in item selection GUI: " + type);
+				break;
+			}
+		}
 	}
 
 	void HandlePlayerDeath(Player player) {
