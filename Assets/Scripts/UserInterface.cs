@@ -19,6 +19,7 @@ public class UserInterface : MonoBehaviour {
 	GameObject NameSelectionPanel;
 	GameObject GuiPanel;
 	RectTransform healthBar;
+	Compass compass;
 	Text NameSelectionMessage;
 	Text NameText;
 	Text goldText;
@@ -43,6 +44,7 @@ public class UserInterface : MonoBehaviour {
 		goldText 			 = GameObject.Find ("GoldText").GetComponent<Text> ();
 		fameText 			 = GameObject.Find ("FameText").GetComponent<Text> ();
 		notificationText     = GameObject.Find ("GuiPanel/Notification").GetComponent<Text> ();
+		compass              = GameObject.Find ("GuiPanel/Compass").GetComponent<Compass> ();
 
 		itemInventory.Add(PowerUps.CannonShot, GameObject.Find ("CannonShotQuantity").GetComponent<Text> ());
 		itemInventory.Add(PowerUps.PowderKeg,  GameObject.Find ("PowderKegQuantity" ).GetComponent<Text> ());
@@ -146,20 +148,21 @@ public class UserInterface : MonoBehaviour {
 		player.OnGoldChange     += UpdateGold;
 		player.OnFameChange     += UpdateFame;
 		player.OnChangePowerups += UpdatePowerUps;
-		player.OnDeath          += HandlePlayerDeath;
 		player.OnLogout         += HandlePlayerLogout;
-		player.OnNotification += HandleNotification;
+		player.OnNotification   += HandleNotification;
+		player.OnKeel           += HandlePlayerKeel;
+		compass.PlayerConnected (player);
 	}
 
 	void HandlePlayerLogout(Player player) {
 		player.OnGoldChange -= UpdateGold;
 		player.OnFameChange -= UpdateFame;
-		player.OnDeath      -= HandlePlayerDeath;
 		player.OnLogout     -= HandlePlayerLogout;
 		player.OnNotification -= HandleNotification;
 	}
 
-	void HandlePlayerDeath(Player player) {
-		
+	void HandlePlayerKeel(GameObject ship) {
+		GuiPanel.SetActive (false);
+		ClassSelectionPanel.SetActive (true);
 	}
 }

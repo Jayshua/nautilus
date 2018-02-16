@@ -9,12 +9,12 @@ public class Zone : NetworkBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("Player")){
+		if (other.CompareTag("Player")) {
 			if (other.GetComponent<NetworkIdentity>().isLocalPlayer){
 				if (!entered)
 				{
 					entered = true;
-					print("Player get 50 gold");
+					this.tag = "Untagged";
 				}
 			}	
 		}

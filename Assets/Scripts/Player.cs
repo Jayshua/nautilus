@@ -8,7 +8,22 @@ public class Player : NetworkBehaviour
 {
 	public string playerName { get; private set; }
 	public NetworkConnection playerConnection;
-	public GameObject playerObject {get; set;}
+
+	GameObject _playerObject;
+	public GameObject playerObject {
+		get {
+			return _playerObject;
+		}
+
+		set {
+			if (value == null && this.OnKeel != null) {
+				this.OnKeel (this._playerObject);
+			} else {
+				this.OnLaunch (value);
+			}
+			this._playerObject = value;
+		}
+	}
 
 	private List<PowerUps> Inventory = new List<PowerUps>() { };
 
@@ -45,7 +60,6 @@ public class Player : NetworkBehaviour
 		}
 	}
 
-	public event Action<Player> OnDeath;
 	public event Action<Player> OnLogout;
 	public event Action<Player> OnGoldChange;
 	public event Action<Player> OnFameChange;
@@ -54,6 +68,8 @@ public class Player : NetworkBehaviour
 
 	public event Action<Player> OnAddPowerups;
 	public event Action<string> OnNotification;
+	public event Action<GameObject> OnLaunch;
+	public event Action<GameObject> OnKeel;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
