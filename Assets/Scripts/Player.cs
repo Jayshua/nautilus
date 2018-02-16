@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// Represents a player on the Server.
 // At the moment, this class should only be used on the server.
 public class Player : NetworkBehaviour
 {
@@ -50,7 +49,11 @@ public class Player : NetworkBehaviour
 	public event Action<Player> OnLogout;
 	public event Action<Player> OnGoldChange;
 	public event Action<Player> OnFameChange;
+
 	public event Action<List <PowerUps>> OnChangePowerups;
+
+	public event Action<Player> OnAddPowerups;
+	public event Action<string> OnNotification;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
@@ -67,6 +70,18 @@ public class Player : NetworkBehaviour
 	private void TargetSetAuthority(NetworkConnection connection) {
 		var GUI = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
 		GUI.PlayerConnected (this);
+	}
+
+	[Server]
+	public void SendNotification(string message) {
+		this.TargetSendNotification (playerConnection, message);
+	}
+
+	[TargetRpc]
+	private void TargetSendNotification(NetworkConnection connection, string message) {
+		if (OnNotification != null) {
+			OnNotification (message);
+		}
 	}
 
 	public void Destroy() {

@@ -122,6 +122,11 @@ public class UserInterface : MonoBehaviour {
 		fameText.text = player.Fame.ToString ();
 	}
 
+	void HandleNotification(string notification)
+	{
+		Debug.Log ("Notification: " + notification);
+	}
+
 	public void UpdatePowerUps(List <PowerUps> powerUps)
 	{
 		itemInventory[PowerUps.CannonShot].text = powerUps.Where(p => p == PowerUps.CannonShot).Count().ToString();
@@ -139,6 +144,7 @@ public class UserInterface : MonoBehaviour {
 		player.OnChangePowerups += UpdatePowerUps;
 		player.OnDeath          += HandlePlayerDeath;
 		player.OnLogout         += HandlePlayerLogout;
+		player.OnNotification += HandleNotification;
 	}
 
 	void HandlePlayerLogout(Player player) {
@@ -146,6 +152,7 @@ public class UserInterface : MonoBehaviour {
 		player.OnFameChange -= UpdateFame;
 		player.OnDeath      -= HandlePlayerDeath;
 		player.OnLogout     -= HandlePlayerLogout;
+		player.OnNotification -= HandleNotification;
 	}
 
 	void HandlePlayerDeath(Player player) {
