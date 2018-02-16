@@ -123,6 +123,8 @@ public class UserInterface : MonoBehaviour {
 		fameText.text = player.Fame.ToString ();
 	}
 
+
+
 	void HandleNotification(string notification)
 	{
 		notificationText.text = notification;
@@ -164,5 +166,30 @@ public class UserInterface : MonoBehaviour {
 	void HandlePlayerKeel(GameObject ship) {
 		GuiPanel.SetActive (false);
 		ClassSelectionPanel.SetActive (true);
+	}
+
+	public void SelectPowerUp(string type) {
+		if (ItemUsed != null) {
+			switch (type) {
+			case "Spyglass":
+				ItemUsed (PowerUps.Spyglass);
+				break;
+			case "PowderKeg":
+				ItemUsed (PowerUps.PowderKeg);
+				break;
+			case "CannonShot":
+				ItemUsed (PowerUps.CannonShot);
+				break;
+			case "LemonJuice":
+				ItemUsed (PowerUps.LemonJuice);
+				break;
+			case "WindBucket":
+				ItemUsed (PowerUps.WindBucket);
+				break;
+			default:
+				Debug.Log ("Unknown powerup type in item selection GUI: " + type);
+				break;
+			}
+		}
 	}
 }
