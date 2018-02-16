@@ -12,7 +12,7 @@ public class Ship : NetworkBehaviour {
 
     [Header("Ship Stat")]
     [SerializeField]
-    float health;
+    float maxHealth;
     [SerializeField]
     float speed;
     [SerializeField]
@@ -57,7 +57,7 @@ public class Ship : NetworkBehaviour {
     {
         backwardSpeed = speed / 2f;
 		rb = GetComponent<Rigidbody> ();
-		currentHealth = health;
+		currentHealth = maxHealth;
     }
 
 	void Start()
@@ -180,7 +180,7 @@ public class Ship : NetworkBehaviour {
 			currentHealth -= amount;
 
 			if (isLocalPlayer) {
-				userInterface.UpdateHealth (currentHealth / health);
+				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
 
 		} else {
@@ -198,5 +198,18 @@ public class Ship : NetworkBehaviour {
 			player.Fame += chest.fame;
 			player.ChangePowerUps(chest.ChestPowerups);
 		}
+	}
+
+	public void LemonJuiceHeal()
+	{
+		currentHealth *= .25f;
+
+		if (currentHealth > maxHealth)
+			currentHealth = maxHealth;
+
+		if (isLocalPlayer) {
+			userInterface.UpdateHealth (currentHealth / maxHealth);
+		}
+
 	}
 }

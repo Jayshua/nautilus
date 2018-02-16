@@ -27,6 +27,8 @@ public class UserInterface : MonoBehaviour {
 
 	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
 
+	public event Action<PowerUps> ItemUsed;
+
 	private Action<ClassType> handleClassSelected;
 	private Action<string>    handleNameSelected;
 
