@@ -23,11 +23,7 @@ public class UserInterface : MonoBehaviour {
 	Text NameText;
 	Text goldText;
 	Text fameText;
-	Text cannonShotText;
-	Text powderKegText;
-	Text spyglassText;
-	Text lemonJuiceText;
-	Text windBucketText;
+	Text notificationText;
 
 	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
 
@@ -44,6 +40,7 @@ public class UserInterface : MonoBehaviour {
 		healthBar            = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		goldText 			 = GameObject.Find ("GoldText").GetComponent<Text> ();
 		fameText 			 = GameObject.Find ("FameText").GetComponent<Text> ();
+		notificationText     = GameObject.Find ("GuiPanel/Notification").GetComponent<Text> ();
 
 		itemInventory.Add(PowerUps.CannonShot, GameObject.Find ("CannonShotQuantity").GetComponent<Text> ());
 		itemInventory.Add(PowerUps.PowderKeg,  GameObject.Find ("PowderKegQuantity" ).GetComponent<Text> ());
@@ -124,7 +121,12 @@ public class UserInterface : MonoBehaviour {
 
 	void HandleNotification(string notification)
 	{
-		Debug.Log ("Notification: " + notification);
+		notificationText.text = notification;
+		Invoke ("RemoveNotification", 10);
+	}
+
+	void RemoveNotification() {
+		notificationText.text = "";
 	}
 
 	public void UpdatePowerUps(List <PowerUps> powerUps)

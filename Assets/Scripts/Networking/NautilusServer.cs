@@ -11,11 +11,13 @@ public class NautilusServer
 {
 	public List<Player> activePlayers = new List<Player> ();
 	GameObject[] shipPrefabs;
+	GameObject[] eventPrefabs;
 	GameObject playerPrefab;
 
-	public NautilusServer (GameObject[] shipPrefabs, GameObject playerPrefab)
+	public NautilusServer (GameObject[] shipPrefabs, GameObject[] eventPrefabs, GameObject playerPrefab)
 	{
 		this.shipPrefabs = shipPrefabs;
+		this.eventPrefabs = eventPrefabs;
 		this.playerPrefab = playerPrefab;
 		NetworkServer.RegisterHandler (MsgTypes.SelectName, HandleNameSelected);
 		NetworkServer.RegisterHandler (MsgTypes.SelectClass, HandleClassSelected);
@@ -81,7 +83,12 @@ public class NautilusServer
 		Ship shipScript = currentPlayer.playerObject.GetComponent<Ship> ();
 		shipScript.player = currentPlayer;
 
-		//UserInterface interfaceScript = currentPlayer.playerObject.GetComponent<UserInterface> ();
-		//interfaceScript. = currentPlayer;
+		var evt = GameObject.Instantiate (eventPrefabs [0]);
+		evt.SendMessage ("BeginEvent", this);
+		//evt.OnEnd += HandleEventEnd;
+	}
+
+	void HandleEventEnd() {
+		Debug.Log ("On End Called");
 	}
 }

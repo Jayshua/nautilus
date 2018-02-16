@@ -14,17 +14,18 @@ public class GoldRush : MonoBehaviour, IEvent {
 	public GameObject zonePrefab;
 	public GameObject chestPrefab;
 
-	List<Zone> zones;
+	List<Zone> zones = new List<Zone> ();
 	public event Action OnEnd;
 
-	public void Initialize(NautilusServer server) {
-		int zoneCount = server.activePlayers.Count / 4;
+	public void BeginEvent(NautilusServer server) {
+		int zoneCount = (int)Math.Ceiling((float)server.activePlayers.Count / 4.0f);
 
 		var zoneSpawnLocations = new HashSet<GameObject>();
 		while (zoneSpawnLocations.Count < zoneCount) {
 			var newLocation = this.transform.GetChild(UnityEngine.Random.Range(0, this.transform.childCount)).gameObject;
 			zoneSpawnLocations.Add (newLocation);
 		}
+		Debug.Log (zoneSpawnLocations.Count);
 
 		foreach (var zoneSpawn in zoneSpawnLocations) {
 			var newZone = GameObject.Instantiate (zonePrefab, zoneSpawn.transform).GetComponent<Zone>();
@@ -34,7 +35,7 @@ public class GoldRush : MonoBehaviour, IEvent {
 		}
 
 		foreach (var player in server.activePlayers) {
-			player.SendNotification ("Gold Rush is beginning!");
+			player.SendNotification ("<size=50>Event: Gold Rush</size>\nBe the first visit as many zones as possible. Trust the compass Luke!");
 		}
 
 		//server.OnPlayerJoin += HandlePlayerJoin;

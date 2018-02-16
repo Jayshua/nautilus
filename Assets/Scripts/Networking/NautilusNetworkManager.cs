@@ -11,6 +11,7 @@ using UnityEngine.Networking.NetworkSystem;
 public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 {
 	public GameObject[] shipPrefabs;
+	public GameObject[] eventPrefabs;
 	public GameObject nautilusPlayerPrefab;
 	NautilusClient nautilusClient;
 	NautilusServer nautilusServer;
@@ -18,7 +19,7 @@ public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 	// Initialize the server class on the server
 	public override void OnStartServer ()
 	{
-		this.nautilusServer = new NautilusServer (shipPrefabs, nautilusPlayerPrefab);
+		this.nautilusServer = new NautilusServer (shipPrefabs, eventPrefabs, nautilusPlayerPrefab);
 		base.OnStartServer ();
 	}
 
