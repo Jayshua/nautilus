@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// Represents a player on the Server.
 // At the moment, this class should only be used on the server.
 public class Player : NetworkBehaviour
 {
