@@ -8,9 +8,9 @@ public class Chest : MonoBehaviour
 {
 
 	public int gold,
-		fame;
+			   fame;
 
-	public List<PowerUps> ChestPowerups = new List<PowerUps> ();
+	public List<PowerUps> ChestPowerups = new List<PowerUps> () { };
 
 	public event Action OnDestroy;
 

@@ -151,7 +151,9 @@ public class Ship : NetworkBehaviour {
         foreach (Transform shotPosition in shotPositionLeft)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
-			cannonBall.GetComponent<CannonBall> ().ballDamage = damage;
+			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
+			cannonScript.ballDamage = damage;
+			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = -transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -163,7 +165,9 @@ public class Ship : NetworkBehaviour {
         foreach (Transform shotPosition in shotPositionRight)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
-			cannonBall.GetComponent<CannonBall> ().ballDamage = damage; 
+			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
+			cannonScript.ballDamage = damage;
+			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -192,7 +196,7 @@ public class Ship : NetworkBehaviour {
 
 			player.Gold += chest.gold;
 			player.Fame += chest.fame;
-			player.Inventory.AddRange (chest.ChestPowerups);
+			player.ChangePowerUps(chest.ChestPowerups);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class CannonBall : MonoBehaviour {
 
 	public float ballDamage;
+	public Player player;
 
 	void OnCollisionEnter(Collision other)
 	{

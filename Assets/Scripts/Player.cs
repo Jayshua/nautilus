@@ -11,9 +11,7 @@ public class Player : NetworkBehaviour
 	public NetworkConnection playerConnection;
 	public GameObject playerObject {get; set;}
 
-	public List<PowerUps> Inventory = new List<PowerUps>() {
-		PowerUps.Spyglass, PowerUps.PowderKeg, PowerUps.CannonShot, PowerUps.LemonJuice, PowerUps.WindBucket
-	};
+	private List<PowerUps> Inventory = new List<PowerUps>() { };
 
 	[SyncVar]
 	int _gold;
@@ -28,7 +26,6 @@ public class Player : NetworkBehaviour
 
 			if (OnGoldChange != null) {
 				OnGoldChange (this);
-				OnAddPowerups (this);
 			}
 		}
 	}
@@ -48,12 +45,12 @@ public class Player : NetworkBehaviour
 			}
 		}
 	}
-		
+
 	public event Action<Player> OnDeath;
 	public event Action<Player> OnLogout;
 	public event Action<Player> OnGoldChange;
 	public event Action<Player> OnFameChange;
-	public event Action<Player> OnAddPowerups;
+	public event Action<List <PowerUps>> OnChangePowerups;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
@@ -75,5 +72,11 @@ public class Player : NetworkBehaviour
 	public void Destroy() {
 		GameObject.Destroy (playerObject);
 		GameObject.Destroy (this);
+	}
+
+	public void ChangePowerUps(List <PowerUps> powerUps)
+	{
+		Inventory.AddRange (powerUps);
+		OnChangePowerups (Inventory);
 	}
 }

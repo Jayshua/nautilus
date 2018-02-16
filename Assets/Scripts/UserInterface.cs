@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public enum ClassType {
 	LargeShip,
@@ -28,6 +29,8 @@ public class UserInterface : MonoBehaviour {
 	Text lemonJuiceText;
 	Text windBucketText;
 
+	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
+
 	private Action<ClassType> handleClassSelected;
 	private Action<string>    handleNameSelected;
 
@@ -41,11 +44,12 @@ public class UserInterface : MonoBehaviour {
 		healthBar            = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		goldText 			 = GameObject.Find ("GoldText").GetComponent<Text> ();
 		fameText 			 = GameObject.Find ("FameText").GetComponent<Text> ();
-		cannonShotText       = GameObject.Find ("CannonShotQuantity").GetComponent<Text> ();
-		powderKegText        = GameObject.Find ("PowderKegQuantity").GetComponent<Text> ();
-		spyglassText         = GameObject.Find ("SpyglassQuantity").GetComponent<Text> ();
-		lemonJuiceText       = GameObject.Find ("LemonJuiceQuantity").GetComponent<Text> ();
-		windBucketText       = GameObject.Find ("WindBucketQuantity").GetComponent<Text> ();
+
+		itemInventory.Add(PowerUps.CannonShot, GameObject.Find ("CannonShotQuantity").GetComponent<Text> ());
+		itemInventory.Add(PowerUps.PowderKeg,  GameObject.Find ("PowderKegQuantity" ).GetComponent<Text> ());
+		itemInventory.Add(PowerUps.Spyglass,   GameObject.Find ("SpyglassQuantity"  ).GetComponent<Text> ());
+		itemInventory.Add(PowerUps.LemonJuice, GameObject.Find ("LemonJuiceQuantity").GetComponent<Text> ());
+		itemInventory.Add(PowerUps.WindBucket, GameObject.Find ("WindBucketQuantity").GetComponent<Text> ());
 
 		ClassSelectionPanel.SetActive(false);
 		GuiPanel.SetActive(false);
@@ -118,19 +122,23 @@ public class UserInterface : MonoBehaviour {
 		fameText.text = player.Fame.ToString ();
 	}
 
-	public void UpdatePowerUps(Player player)
+	public void UpdatePowerUps(List <PowerUps> powerUps)
 	{
-		Debug.Log (player.Inventory.Count);
+		itemInventory[PowerUps.CannonShot].text = powerUps.Where(p => p == PowerUps.CannonShot).Count().ToString();
+		itemInventory[PowerUps.PowderKeg ].text = powerUps.Where(p => p == PowerUps.PowderKeg ).Count().ToString();
+		itemInventory[PowerUps.Spyglass  ].text = powerUps.Where(p => p == PowerUps.Spyglass  ).Count().ToString();
+		itemInventory[PowerUps.LemonJuice].text = powerUps.Where(p => p == PowerUps.LemonJuice).Count().ToString();
+		itemInventory[PowerUps.WindBucket].text = powerUps.Where(p => p == PowerUps.WindBucket).Count().ToString();
 	}
 
 	public void PlayerConnected(Player player)
 	{
 		Player playerClass = player;
-		player.OnGoldChange   += UpdateGold;
-		player.OnFameChange   += UpdateFame;
-		player.OnAddPowerups  += UpdatePowerUps;
-		player.OnDeath        += HandlePlayerDeath;
-		player.OnLogout       += HandlePlayerLogout;
+		player.OnGoldChange     += UpdateGold;
+		player.OnFameChange     += UpdateFame;
+		player.OnChangePowerups += UpdatePowerUps;
+		player.OnDeath          += HandlePlayerDeath;
+		player.OnLogout         += HandlePlayerLogout;
 	}
 
 	void HandlePlayerLogout(Player player) {
