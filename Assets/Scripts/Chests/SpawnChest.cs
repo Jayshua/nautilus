@@ -14,10 +14,10 @@ public class SpawnChest : NetworkBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		if (isServer) {
 		spotUsed = new bool[ChestSpawnLocations.Length]; // Assign the number of spawn locations to the number of spots used
-
 		StartCoroutine (SpawnChests ()); // Start coroutine to spawn chests
+		}
 	}
 
 	IEnumerator SpawnChests() {

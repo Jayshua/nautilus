@@ -23,8 +23,6 @@ public class UserInterface : MonoBehaviour {
 	Text goldText;
 	Text fameText;
 
-	Player playerClass;
-
 	private Action<ClassType> handleClassSelected;
 	private Action<string> handleNameSelected;
 
@@ -45,10 +43,7 @@ public class UserInterface : MonoBehaviour {
 
 	void Update()
 	{
-		if (playerClass != null) {
-			UpdateGold (playerClass.Gold);
-			UpdateFame (playerClass.Fame);
-		}
+
 	}
 		
 	public void ShowClassSelection(Action<ClassType> callback) {
@@ -107,18 +102,35 @@ public class UserInterface : MonoBehaviour {
 		healthBar.sizeDelta = new Vector2 (health * HEALTHBARWIDTH, healthBar.sizeDelta.y);
 	}
 
-	public void UpdateGold (int gold)
+	public void UpdateGold (Player player)
 	{
-		goldText.text = gold.ToString();
+		goldText.text = player.Gold.ToString();
 	}
 
-	public void UpdateFame (int fame)
+	public void UpdateFame (Player player)
 	{
-		fameText.text = fame.ToString ();
+		fameText.text = player.Fame.ToString ();
 	}
 
 	public void PlayerConnected(Player player)
 	{
-		playerClass = player;
+		Player playerClass = player;
+		player.OnGoldChange   += UpdateGold;
+		player.OnFameChange   += UpdateFame;
+		player.OnDeath        += HandlePlayerDeath;
+		player.OnLogout       += HandlePlayerLogout;
 	}
+
+	void HandlePlayerLogout(Player player) {
+		player.OnGoldChange -= UpdateGold;
+	}
+
+	void HandlePlayerDeath(Player player) {
+		
+	}
+
+	void HandleHealthChange(Player player) {
+
+	}
+
 }

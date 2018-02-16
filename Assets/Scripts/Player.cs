@@ -11,42 +11,63 @@ public class Player : NetworkBehaviour
 	public NetworkConnection playerConnection;
 	public GameObject playerObject {get; set;}
 
-	event Action OnDeath;
-	event Action OnGoldChange;
-	event Action OnFameChange;
-	event Action OnHealthChange;
-	event Action OnAchievement;
-
 	public List<PowerUps> Inventory = new List<PowerUps>() {
 		PowerUps.Spyglass, PowerUps.PowderKeg, PowerUps.CannonShot, PowerUps.LemonJuice, PowerUps.WindBucket
 	};
 
-	void Start()
-	{
-		if (isLocalPlayer) {
-			var GUI = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-			GUI.PlayerConnected (this);
+	[SyncVar]
+	int _gold;
+
+	public int Gold {
+		get {
+			return this._gold;
+		}
+
+		set {
+			this._gold = value;
+
+			if (OnGoldChange != null) {
+				OnGoldChange (this);
+			}
 		}
 	}
 
-	void Update()
-	{
+	[SyncVar]
+	int _fame;
 
+	public int Fame {
+		get{
+			return this._fame;
+		}
+		set {
+			this._fame = value;
+
+			if (OnFameChange != null) {
+				OnFameChange (this);
+			}
+		}
 	}
-
-	[SyncVar]
-	public int Gold;
-	[SyncVar]
-	public int Fame;
+		
+	public event Action<Player> OnDeath;
+	public event Action<Player> OnLogout;
+	public event Action<Player> OnGoldChange;
+	public event Action<Player> OnFameChange;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
 		if (this.playerName == null || this.playerConnection == null ) {
 			this.playerName = playerName;
 			this.playerConnection = playerConnection;
+			this.TargetSetAuthority (playerConnection);
 		} else {
 			throw new Exception ("Called setup on an Player object that has already been setup. The player was: " + playerName);
 		}
+	}
+
+	[TargetRpc]
+	private void TargetSetAuthority(NetworkConnection connection) {
+		var GUI = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
+		GUI.PlayerConnected (this);
 	}
 
 	public void Destroy() {

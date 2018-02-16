@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -66,8 +67,6 @@ public class Ship : NetworkBehaviour {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
 			GameObject.Find ("Compass").GetComponent<Compass> ().PlayerCreated (this.transform);
 		}
-
-
 	}
 	
 	void FixedUpdate ()
