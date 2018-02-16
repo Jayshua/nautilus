@@ -28,6 +28,7 @@ public class Player : NetworkBehaviour
 
 			if (OnGoldChange != null) {
 				OnGoldChange (this);
+				OnAddPowerups (this);
 			}
 		}
 	}
@@ -52,6 +53,7 @@ public class Player : NetworkBehaviour
 	public event Action<Player> OnLogout;
 	public event Action<Player> OnGoldChange;
 	public event Action<Player> OnFameChange;
+	public event Action<Player> OnAddPowerups;
 
 	[Server]
 	public void Setup(string playerName, NetworkConnection playerConnection) {
