@@ -22,13 +22,13 @@ public class GoldRush : MonoBehaviour, IEvent {
 
 		var zoneSpawnLocations = new HashSet<GameObject>();
 		while (zoneSpawnLocations.Count < zoneCount) {
-			var newLocation = this.transform.GetChild(UnityEngine.Random.Range(0, this.transform.childCount));
+			var newLocation = this.transform.GetChild(UnityEngine.Random.Range(0, this.transform.childCount)).gameObject;
 			zoneSpawnLocations.Add (newLocation);
 		}
 
 		foreach (var zoneSpawn in zoneSpawnLocations) {
-			var newZone = GameObject.Instantiate (zonePrefab, zoneSpawn.transform.position);
-			var newChest = GameObject.Instantiate (chestPrefab, zoneSpawn.transform.position).GetComponent<Chest>();
+			var newZone = GameObject.Instantiate (zonePrefab, zoneSpawn.transform).GetComponent<Zone>();
+			var newChest = GameObject.Instantiate (chestPrefab, zoneSpawn.transform).GetComponent<Chest>();
 			newChest.gold = 500;
 			this.zones.Add (newZone);
 		}
@@ -37,7 +37,7 @@ public class GoldRush : MonoBehaviour, IEvent {
 			player.SendNotification ("Gold Rush is beginning!");
 		}
 
-		server.OnPlayerJoin += HandlePlayerJoin;
+		//server.OnPlayerJoin += HandlePlayerJoin;
 
 		// Create coin zones
 		// Create the chests
