@@ -25,7 +25,7 @@ public class GoldRush : MonoBehaviour, IEvent {
 			var newLocation = this.transform.GetChild(UnityEngine.Random.Range(0, this.transform.childCount)).gameObject;
 			zoneSpawnLocations.Add (newLocation);
 		}
-		Debug.Log (zoneSpawnLocations.Count);
+		//Debug.Log (zoneSpawnLocations.Count);
 
 		foreach (var zoneSpawn in zoneSpawnLocations) {
 			var newZone = GameObject.Instantiate (zonePrefab, zoneSpawn.transform).GetComponent<Zone>();

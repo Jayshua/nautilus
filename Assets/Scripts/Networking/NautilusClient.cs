@@ -18,7 +18,7 @@ public class NautilusClient
 		this.userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
 
 		client.RegisterHandler (MsgTypes.IsNameOk, HandleNameIsOk);
-		userInterface.ShowNameSelection (HandleNameSelectedClient, false);
+		userInterface.ShowNameSelection (false);
 
 		// So when the server calls AddPlayerForConnection when creating the player it is
 		// required to pass a controllerID. That controllerID is used to support multiple
@@ -28,6 +28,9 @@ public class NautilusClient
 		// It was getting annoying. The internet says this is a safe way to get rid of it.
 		// http://answers.unity.com/questions/1084534/playercontrollerid-higher-than-expected.html
 		ClientScene.localPlayers.Add (null);
+
+		userInterface.OnNameSelected += HandleNameSelectedClient;
+		userInterface.OnClassSelected += HandleClassSelectedClient;
 	}
 
 	// Run when the server responds to a SelectName message.
@@ -37,9 +40,9 @@ public class NautilusClient
 		bool isOk = message.ReadMessage<MsgTypes.BooleanMessage> ().value;
 
 		if (isOk) {
-			userInterface.ShowClassSelection (HandleClassSelectedClient);
+			userInterface.ShowClassSelection ();
 		} else {
-			userInterface.ShowNameSelection (HandleNameSelectedClient, true);
+			userInterface.ShowNameSelection (true);
 		}
 	}
 

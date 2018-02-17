@@ -26,7 +26,7 @@ public class Compass : MonoBehaviour {
 			northDirection.z = player.transform.eulerAngles.y;
 			compass.localEulerAngles = northDirection;
 		} else {
-			Debug.Log ("Null");
+			//Debug.Log ("Null");
 		}
 	}
 

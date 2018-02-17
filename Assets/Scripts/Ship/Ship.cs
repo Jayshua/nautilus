@@ -174,15 +174,17 @@ public class Ship : NetworkBehaviour {
         StopCoroutine(InstantiateShotsOnRight());
     }
 		
-	public void TakeDamage(float amount)
+	public void TakeDamage(float amount, Player enemy)
 	{
-		if (currentHealth > 0f) {
+		if (currentHealth - amount > 0f) {
 			currentHealth -= amount;
+			Debug.Log (currentHealth);
 
 			if (isLocalPlayer) {
 				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
 		} else {
+			player.ShipKeeled (enemy);
 			Destroy (this.gameObject);
 		}
 	}

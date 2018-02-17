@@ -10,9 +10,14 @@ public class CannonBall : MonoBehaviour {
 	void OnCollisionEnter(Collision other)
 	{
 		if (other.gameObject.CompareTag ("Player")) {
-			other.gameObject.GetComponent<Ship> ().TakeDamage (ballDamage);
+			other.gameObject.GetComponent<Ship> ().TakeDamage (ballDamage, player);
 		}
 
 		Destroy (this.gameObject);
+	}
+
+	void Start()
+	{
+		Destroy(this, 6);
 	}
 }

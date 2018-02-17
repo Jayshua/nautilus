@@ -29,9 +29,8 @@ public class UserInterface : MonoBehaviour {
 	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
 
 	public event Action<PowerUps> ItemUsed;
-
-	private Action<ClassType> handleClassSelected;
-	private Action<string>    handleNameSelected;
+	public event Action<ClassType> OnClassSelected;
+	public event Action<String> OnNameSelected;
 
 	void Start()
 	{
@@ -57,14 +56,12 @@ public class UserInterface : MonoBehaviour {
 		NameSelectionPanel.SetActive(false);
 	}
 		
-	public void ShowClassSelection(Action<ClassType> callback) {
-		handleClassSelected = callback;
+	public void ShowClassSelection() {
 		ClassSelectionPanel.SetActive(true);
 		NameSelectionPanel.SetActive(false);
 	}
 
-	public void ShowNameSelection(Action<string> callback, bool isNameTaken) {
-		handleNameSelected = callback;
+	public void ShowNameSelection(bool isNameTaken) {
 		NameSelectionPanel.SetActive(true);
 
 		if (isNameTaken) {
@@ -82,29 +79,27 @@ public class UserInterface : MonoBehaviour {
 
 	public void SelectClass(string type) {
 		ShowGUI ();
-		if (handleClassSelected != null) {
+		if (OnClassSelected != null) {
 			switch (type) {
 			case "Black Pearl":
-				handleClassSelected (ClassType.SmallShip);
+				OnClassSelected (ClassType.SmallShip);
 				break;
 			case "Captian Fortune":
-				handleClassSelected (ClassType.MediumShip);
+				OnClassSelected (ClassType.MediumShip);
 				break;
 			case "Royal Dutchman":
-				handleClassSelected (ClassType.LargeShip);
+				OnClassSelected (ClassType.LargeShip);
 				break;
 			default:
 				Debug.Log ("Unknown class type in class selection GUI: " + type);
 				break;
 			}
-
-			handleClassSelected = null;
 		}
 	}
 
 	public void Submit() {
-		if (handleNameSelected != null) {
-			handleNameSelected (NameText.text);
+		if (OnNameSelected != null) {
+			OnNameSelected (NameText.text);
 		}
 	}
 
