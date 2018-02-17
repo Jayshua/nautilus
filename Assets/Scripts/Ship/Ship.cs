@@ -110,12 +110,6 @@ public class Ship : NetworkBehaviour {
 
         wheelFR.steerAngle = moveHorizontal * steerMultiplier;
         wheelFL.steerAngle = moveHorizontal * steerMultiplier;
-
-
-		// DEBUG
-		Debug.Log("Magnitude: " + rb.velocity.magnitude);
-		Debug.Log ("Torque: " + wheelBR.motorTorque);
-
     }
 		
     public void Fire()
