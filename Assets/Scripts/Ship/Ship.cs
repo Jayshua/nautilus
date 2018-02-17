@@ -66,7 +66,6 @@ public class Ship : NetworkBehaviour {
 		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
 		if (isLocalPlayer) {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
-			GameObject.Find ("Compass").GetComponent<Compass> ().PlayerCreated (this.transform);
 		}
 	}
 	
@@ -183,7 +182,6 @@ public class Ship : NetworkBehaviour {
 			if (isLocalPlayer) {
 				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
-
 		} else {
 			Destroy (this.gameObject);
 		}
