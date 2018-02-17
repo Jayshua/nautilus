@@ -52,7 +52,7 @@ public class Ship : NetworkBehaviour {
 
     void Awake()
     {
-        backwardSpeed = speed / 2f;
+        backwardSpeed = speed / 1.5f;
 		rb = GetComponent<Rigidbody> ();
 		currentHealth = health;
     }
@@ -82,11 +82,21 @@ public class Ship : NetworkBehaviour {
 
         if (moveVertical > 0)
         {
-            wheelBR.motorTorque = moveVertical * speed;
+			if (wheelBR.motorTorque < 0.0f)
+			{
+				rb.drag = 25f;
+				wheelBR.motorTorque = moveVertical * backwardSpeed * 50f;
+				wheelBL.motorTorque = moveVertical * backwardSpeed * 50f;
+			}
+			wheelBR.motorTorque = moveVertical * speed;
             wheelBL.motorTorque = moveVertical * speed;
         }
         else if (moveVertical < 0)
         {
+			if (wheelBR.motorTorque > 0.0f)
+			{
+				rb.drag = 25f;
+			}
             wheelBR.motorTorque = moveVertical * backwardSpeed;
             wheelBL.motorTorque = moveVertical * backwardSpeed;
         }
@@ -97,6 +107,12 @@ public class Ship : NetworkBehaviour {
 
         wheelFR.steerAngle = moveHorizontal * steerMultiplier;
         wheelFL.steerAngle = moveHorizontal * steerMultiplier;
+
+
+		// DEBUG
+		Debug.Log("Magnitude: " + rb.velocity.magnitude);
+		Debug.Log ("Torque: " + wheelBR.motorTorque);
+
     }
 		
     public void Fire()
