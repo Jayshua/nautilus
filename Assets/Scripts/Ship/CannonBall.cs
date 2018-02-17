@@ -5,11 +5,12 @@ using UnityEngine;
 public class CannonBall : MonoBehaviour {
 
 	public float ballDamage;
+	public Player player;
 
 	void OnCollisionEnter(Collision other)
 	{
 		if (other.gameObject.CompareTag ("Player")) {
-			other.gameObject.GetComponent<Ship> ().TakeDamge (ballDamage);
+			other.gameObject.GetComponent<Ship> ().TakeDamage (ballDamage);
 		}
 
 		Destroy (this.gameObject);

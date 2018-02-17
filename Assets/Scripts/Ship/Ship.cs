@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,9 +8,12 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody))]
 public class Ship : NetworkBehaviour {
 
+	const float LEMON_JUICE_MULTIPLIER = .25f;
+	public Player player;
+
     [Header("Ship Stat")]
     [SerializeField]
-    float health;
+    float maxHealth;
     [SerializeField]
     float speed;
     [SerializeField]
@@ -54,13 +58,12 @@ public class Ship : NetworkBehaviour {
     {
         backwardSpeed = speed / 1.5f;
 		rb = GetComponent<Rigidbody> ();
-		currentHealth = health;
+		currentHealth = maxHealth;
     }
 
 	void Start()
 	{
 		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		healthBar = GameObject.Find ("HealthBar").GetComponent<RectTransform>();
 		if (isLocalPlayer) {
 			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
 		}
@@ -164,7 +167,9 @@ public class Ship : NetworkBehaviour {
         foreach (Transform shotPosition in shotPositionLeft)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
-			cannonBall.GetComponent<CannonBall> ().ballDamage = damage;
+			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
+			cannonScript.ballDamage = damage;
+			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = -transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -176,25 +181,50 @@ public class Ship : NetworkBehaviour {
         foreach (Transform shotPosition in shotPositionRight)
         {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
-			cannonBall.GetComponent<CannonBall> ().ballDamage = damage; 
+			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
+			cannonScript.ballDamage = damage;
+			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
         StopCoroutine(InstantiateShotsOnRight());
     }
 		
-	public void TakeDamge(float amount)
+	public void TakeDamage(float amount)
 	{
 		if (currentHealth > 0f) {
 			currentHealth -= amount;
 
 			if (isLocalPlayer) {
-				healthBar.sizeDelta = new Vector2 (currentHealth / health * 1145, healthBar.sizeDelta.y);
+				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
-
 		} else {
 			Destroy (this.gameObject);
-			userInterface.HideGUI ();
 		}
+	}
+
+	void OnTriggerEnter (Collider collision)
+	{
+		if (collision.gameObject.tag == "Chest") {
+
+			Chest chest = collision.gameObject.GetComponent<Chest>();
+
+			player.Gold += chest.gold;
+			player.Fame += chest.fame;
+			player.AddPowerUps(chest.ChestPowerups);
+		}
+	}
+
+	public void LemonJuiceHeal()
+	{
+		currentHealth *= LEMON_JUICE_MULTIPLIER;
+
+		if (currentHealth > maxHealth)
+			currentHealth = maxHealth;
+
+		if (isLocalPlayer) {
+			userInterface.UpdateHealth (currentHealth / maxHealth);
+		}
+
 	}
 }

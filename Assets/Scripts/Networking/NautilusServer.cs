@@ -9,12 +9,16 @@ using System.Linq;
 // Keeps track of the active players and will start and end events.
 public class NautilusServer
 {
-	List<Player> activePlayers = new List<Player> ();
+	public List<Player> activePlayers = new List<Player> ();
 	GameObject[] shipPrefabs;
+	GameObject[] eventPrefabs;
+	GameObject playerPrefab;
 
-	public NautilusServer (GameObject[] shipPrefabs)
+	public NautilusServer (GameObject[] shipPrefabs, GameObject[] eventPrefabs, GameObject playerPrefab)
 	{
 		this.shipPrefabs = shipPrefabs;
+		this.eventPrefabs = eventPrefabs;
+		this.playerPrefab = playerPrefab;
 		NetworkServer.RegisterHandler (MsgTypes.SelectName, HandleNameSelected);
 		NetworkServer.RegisterHandler (MsgTypes.SelectClass, HandleClassSelected);
 	}
@@ -24,7 +28,7 @@ public class NautilusServer
 	public void ClientDisconnected(NetworkConnection disconnectedConnection) {
 		activePlayers = activePlayers
 			.Where (player => {
-				if (player.connection == disconnectedConnection) {
+				if (player.connectionToClient == disconnectedConnection) {
 					player.Destroy();
 					return false;
 				} else {
@@ -41,7 +45,11 @@ public class NautilusServer
 		bool nameUsed = activePlayers.Any (player => player.name.Equals (name));
 
 		if (!nameUsed) {
-			activePlayers.Add (new Player (name, nameMessage.conn));
+			var newPlayer = GameObject.Instantiate (playerPrefab);
+			NetworkServer.Spawn (newPlayer);
+			var playerObject = newPlayer.GetComponent<Player> ();
+			playerObject.Setup (name, nameMessage.conn);
+			activePlayers.Add (playerObject);
 		}
 
 		nameMessage.conn.Send (
@@ -69,6 +77,18 @@ public class NautilusServer
 		}
 
 		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		activePlayers.First (p => p.connection == prefabMessage.conn).playerObject = player;
+		Player currentPlayer = activePlayers.First ((Player p) => p.playerConnection == prefabMessage.conn);
+		currentPlayer.playerObject = player;
+
+		Ship shipScript = currentPlayer.playerObject.GetComponent<Ship> ();
+		shipScript.player = currentPlayer;
+
+		var evt = GameObject.Instantiate (eventPrefabs [0]);
+		evt.SendMessage ("BeginEvent", this);
+		//evt.OnEnd += HandleEventEnd;
+	}
+
+	void HandleEventEnd() {
+		Debug.Log ("On End Called");
 	}
 }
