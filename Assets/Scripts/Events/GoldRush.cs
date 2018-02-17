@@ -17,7 +17,7 @@ public class GoldRush : MonoBehaviour, IEvent {
 	List<Zone> zones = new List<Zone> ();
 	public event Action OnEnd;
 
-	public void BeginEvent(NautilusServer server) {
+	public void BeginEvent(NautilusNetworkManager server) {
 		int zoneCount = (int)Math.Ceiling((float)server.activePlayers.Count / 4.0f);
 
 		var zoneSpawnLocations = new HashSet<GameObject>();

@@ -6,6 +6,10 @@ using UnityEngine.Networking;
 // At the moment, this class should only be used on the server.
 public class Player : NetworkBehaviour
 {
+	public GameObject LargeShipPrefab;
+	public GameObject MediumShipPrefab;
+	public GameObject SmallShipPrefab;
+
 	const int SINK_AWARD = 50;
 	const int MIN_SINK_AWARD = 100;
 	const int MAX_SINK_AWARD = 200;
@@ -121,7 +125,22 @@ public class Player : NetworkBehaviour
 
 	[Command]
 	void CmdSpawnShip(ClassType type) {
-		var newShip = (GameObject)Instantiate (type);
+		GameObject newShip;
+		switch (type) {
+		case ClassType.LargeShip:
+			newShip = (GameObject)Instantiate (LargeShipPrefab);
+			break;
+		case ClassType.MediumShip:
+			newShip = (GameObject)Instantiate (MediumShipPrefab);
+			break;
+		case ClassType.SmallShip:
+			newShip = (GameObject)Instantiate (SmallShipPrefab);
+			break;
+		default:
+			newShip = null;
+			break;
+		}
+
 		NetworkServer.Spawn (newShip);
 		this.playerObject = newShip;
 		var netId = newShip.GetComponent<NetworkIdentity> ().netId;

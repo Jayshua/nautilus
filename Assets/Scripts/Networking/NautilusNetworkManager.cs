@@ -9,13 +9,12 @@ using UnityEngine.Networking.NetworkSystem;
 // Controls the network communication on both the client and the server
 // Delegates most of the work to the NautilusClient and NautilusServer
 // classes which run on the client and the server respectively.
-public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
+public class NautilusNetworkManager : UnityEngine.Networking.NetworkBehaviour
 {
-	public GameObject[] shipPrefabs;
 	public GameObject[] eventPrefabs;
 	public GameObject nautilusPlayerPrefab;
 
-	List<Player> activePlayers;
+	public List<Player> activePlayers;
 	public event Action<Player> OnPlayerJoin;
 
 
@@ -41,15 +40,16 @@ public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 	[Command]
 	void CmdPlayerLogout(NetworkInstanceId id) {
 		var player = NetworkServer.FindLocalObject (id).GetComponent<Player> ();
-		this.activePlayers = this.activePlayers.Where(p => p != player);
+		this.activePlayers = this.activePlayers.Where (p => p != player).ToList ();
 	}
 
 
 	/**** Client ****/
 	UserInterface userInterface;
-	public override void OnStartClient (UnityEngine.Networking.NetworkClient client)
+	public void OnStartClient ()
 	{
-		userInterface = GameObject.Find ("User Interface");
+		Debug.Log ("HERE");
+		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface>();
 		userInterface.OnNameSelected += HandleNameSelected;
 	}
 

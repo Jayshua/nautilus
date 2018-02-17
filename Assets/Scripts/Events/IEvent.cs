@@ -1,6 +1,6 @@
 using System;
 
 interface IEvent {
-	void BeginEvent(NautilusServer gameController);
+	void BeginEvent(NautilusNetworkManager gameController);
 	event Action OnEnd;
 }
