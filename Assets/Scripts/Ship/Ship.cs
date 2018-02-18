@@ -64,14 +64,15 @@ public class Ship : NetworkBehaviour {
 	void Start()
 	{
 		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		if (isLocalPlayer) {
-			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
-		}
+	}
+
+	public override void OnStartAuthority() {
+		GameObject.Find ("Main Camera").GetComponent<CameraFollow> ().PlayerCreated (this.transform);
 	}
 	
 	void FixedUpdate ()
     {
-		if (!isLocalPlayer)
+		if (!this.hasAuthority)
 			return;
         Movement();
         Fire();
@@ -179,7 +180,7 @@ public class Ship : NetworkBehaviour {
 		if (currentHealth > 0f) {
 			currentHealth -= amount;
 
-			if (isLocalPlayer) {
+			if (this.hasAuthority) {
 				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
 		} else {
@@ -206,9 +207,8 @@ public class Ship : NetworkBehaviour {
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
-		if (isLocalPlayer) {
+		if (this.hasAuthority) {
 			userInterface.UpdateHealth (currentHealth / maxHealth);
 		}
-
 	}
 }

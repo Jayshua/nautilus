@@ -28,9 +28,9 @@ public class UserInterface : MonoBehaviour {
 
 	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
 
-	public event Action<PowerUps> ItemUsed;
+	public event Action<PowerUps> OnItemUsed;
+	public event Action<ClassType> OnClassSelected;
 
-	private Action<ClassType> handleClassSelected;
 	private Action<string>    handleNameSelected;
 
 	void Start()
@@ -57,10 +57,8 @@ public class UserInterface : MonoBehaviour {
 		NameSelectionPanel.SetActive(false);
 	}
 		
-	public void ShowClassSelection(Action<ClassType> callback) {
-		handleClassSelected = callback;
-		ClassSelectionPanel.SetActive(true);
-		NameSelectionPanel.SetActive(false);
+	public void ShowClassSelection() {
+		ShowPanel (ClassSelectionPanel);
 	}
 
 	public void ShowNameSelection(Action<string> callback, bool isNameTaken) {
@@ -82,23 +80,21 @@ public class UserInterface : MonoBehaviour {
 
 	public void SelectClass(string type) {
 		ShowGUI ();
-		if (handleClassSelected != null) {
+		if (OnClassSelected != null) {
 			switch (type) {
 			case "Black Pearl":
-				handleClassSelected (ClassType.SmallShip);
+				OnClassSelected (ClassType.SmallShip);
 				break;
 			case "Captian Fortune":
-				handleClassSelected (ClassType.MediumShip);
+				OnClassSelected (ClassType.MediumShip);
 				break;
 			case "Royal Dutchman":
-				handleClassSelected (ClassType.LargeShip);
+				OnClassSelected (ClassType.LargeShip);
 				break;
 			default:
 				Debug.Log ("Unknown class type in class selection GUI: " + type);
 				break;
 			}
-
-			handleClassSelected = null;
 		}
 	}
 
@@ -146,45 +142,58 @@ public class UserInterface : MonoBehaviour {
 
 	public void PlayerConnected(Player player)
 	{
-		Player playerClass = player;
 		player.OnGoldChange     += UpdateGold;
 		player.OnFameChange     += UpdateFame;
 		player.OnChangePowerups += UpdatePowerUps;
 		player.OnLogout         += HandlePlayerLogout;
 		player.OnNotification   += HandleNotification;
 		player.OnKeel           += HandlePlayerKeel;
+		player.OnLaunch         += HandlePlayerLaunch;
 		compass.PlayerConnected (player);
 	}
 
 	void HandlePlayerLogout(Player player) {
-		player.OnGoldChange -= UpdateGold;
-		player.OnFameChange -= UpdateFame;
-		player.OnLogout     -= HandlePlayerLogout;
-		player.OnNotification -= HandleNotification;
+		player.OnGoldChange     -= UpdateGold;
+		player.OnFameChange     -= UpdateFame;
+		player.OnChangePowerups -= UpdatePowerUps;
+		player.OnLogout         -= HandlePlayerLogout;
+		player.OnNotification   -= HandleNotification;
+		player.OnKeel           -= HandlePlayerKeel;
+		player.OnLaunch         -= HandlePlayerLaunch;
+	}
+
+	void HandlePlayerLaunch(GameObject ship) {
+		ShowPanel (GuiPanel);
 	}
 
 	void HandlePlayerKeel(GameObject ship) {
+		ShowPanel (ClassSelectionPanel);
+	}
+
+	void ShowPanel(GameObject panel) {
 		GuiPanel.SetActive (false);
-		ClassSelectionPanel.SetActive (true);
+		ClassSelectionPanel.SetActive (false);
+		NameSelectionPanel.SetActive (false);
+		panel.SetActive (true);
 	}
 
 	public void SelectPowerUp(string type) {
-		if (ItemUsed != null) {
+		if (OnItemUsed != null) {
 			switch (type) {
 			case "Spyglass":
-				ItemUsed (PowerUps.Spyglass);
+				OnItemUsed (PowerUps.Spyglass);
 				break;
 			case "PowderKeg":
-				ItemUsed (PowerUps.PowderKeg);
+				OnItemUsed (PowerUps.PowderKeg);
 				break;
 			case "CannonShot":
-				ItemUsed (PowerUps.CannonShot);
+				OnItemUsed (PowerUps.CannonShot);
 				break;
 			case "LemonJuice":
-				ItemUsed (PowerUps.LemonJuice);
+				OnItemUsed (PowerUps.LemonJuice);
 				break;
 			case "WindBucket":
-				ItemUsed (PowerUps.WindBucket);
+				OnItemUsed (PowerUps.WindBucket);
 				break;
 			default:
 				Debug.Log ("Unknown powerup type in item selection GUI: " + type);

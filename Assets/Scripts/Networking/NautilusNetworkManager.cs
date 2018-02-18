@@ -13,7 +13,7 @@ public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 	public GameObject[] shipPrefabs;
 	public GameObject[] eventPrefabs;
 	public GameObject nautilusPlayerPrefab;
-	NautilusClient nautilusClient;
+	//NautilusClient nautilusClient;
 	NautilusServer nautilusServer;
 
 	// Initialize the server class on the server
@@ -26,7 +26,8 @@ public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 	// Initialize the client class on the client
 	public override void OnStartClient (UnityEngine.Networking.NetworkClient client)
 	{
-		this.nautilusClient = new NautilusClient (client);
+		//this.nautilusClient = new NautilusClient (client);
+		new NautilusClient (client);
 		base.OnStartClient (client);
 	}
 

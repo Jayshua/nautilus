@@ -20,7 +20,6 @@ public class NautilusServer
 		this.eventPrefabs = eventPrefabs;
 		this.playerPrefab = playerPrefab;
 		NetworkServer.RegisterHandler (MsgTypes.SelectName, HandleNameSelected);
-		NetworkServer.RegisterHandler (MsgTypes.SelectClass, HandleClassSelected);
 	}
 
 	// Called by the NetworkManager when a client disconnects.
@@ -46,9 +45,9 @@ public class NautilusServer
 
 		if (!nameUsed) {
 			var newPlayer = GameObject.Instantiate (playerPrefab);
-			NetworkServer.Spawn (newPlayer);
 			var playerObject = newPlayer.GetComponent<Player> ();
-			playerObject.Setup (name, nameMessage.conn);
+			playerObject.playerName = name;
+			NetworkServer.AddPlayerForConnection (nameMessage.conn, newPlayer, 0);
 			activePlayers.Add (playerObject);
 		}
 
@@ -56,39 +55,5 @@ public class NautilusServer
 			MsgTypes.IsNameOk,
 			new MsgTypes.BooleanMessage (!nameUsed)
 		);
-	}
-
-	// Set the player's chosen class and spawn them into the game.
-	void HandleClassSelected (NetworkMessage prefabMessage)
-	{
-		MsgTypes.SelectClassMsg msg = prefabMessage.ReadMessage<MsgTypes.SelectClassMsg> ();
-		GameObject player = null;
-
-		switch (msg.prefabIndex) {
-		case ClassType.SmallShip:
-			player = (GameObject)Object.Instantiate (shipPrefabs [0]);
-			break;
-		case ClassType.MediumShip:
-			player = (GameObject)Object.Instantiate (shipPrefabs [1]);
-			break;
-		case ClassType.LargeShip:
-			player = (GameObject)Object.Instantiate (shipPrefabs [2]);
-			break;
-		}
-
-		NetworkServer.AddPlayerForConnection (prefabMessage.conn, player, 0);
-		Player currentPlayer = activePlayers.First ((Player p) => p.playerConnection == prefabMessage.conn);
-		currentPlayer.playerObject = player;
-
-		Ship shipScript = currentPlayer.playerObject.GetComponent<Ship> ();
-		shipScript.player = currentPlayer;
-
-		var evt = GameObject.Instantiate (eventPrefabs [0]);
-		evt.SendMessage ("BeginEvent", this);
-		//evt.OnEnd += HandleEventEnd;
-	}
-
-	void HandleEventEnd() {
-		Debug.Log ("On End Called");
 	}
 }

@@ -37,7 +37,7 @@ public class NautilusClient
 		bool isOk = message.ReadMessage<MsgTypes.BooleanMessage> ().value;
 
 		if (isOk) {
-			userInterface.ShowClassSelection (HandleClassSelectedClient);
+			userInterface.ShowClassSelection ();
 		} else {
 			userInterface.ShowNameSelection (HandleNameSelectedClient, true);
 		}
@@ -48,12 +48,5 @@ public class NautilusClient
 	void HandleNameSelectedClient (string name)
 	{
 		networkClient.Send (MsgTypes.SelectName, new StringMessage (name));
-	}
-
-	// Send a class selection message to the server when the UI indicates
-	// a class has been selected.
-	void HandleClassSelectedClient (ClassType chosenClass)
-	{
-		networkClient.Send (MsgTypes.SelectClass, new MsgTypes.SelectClassMsg (chosenClass));
 	}
 }

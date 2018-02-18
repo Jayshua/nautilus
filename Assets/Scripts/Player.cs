@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-// At the moment, this class should only be used on the server.
 public class Player : NetworkBehaviour
 {
-	public string playerName { get; private set; }
-	public NetworkConnection playerConnection;
+	public GameObject SmallShipPrefab;
+	public GameObject MediumShipPrefab;
+	public GameObject LargeShipPrefab;
 
 	GameObject _playerObject;
-	public GameObject playerObject {
+	public GameObject playerShip {
 		get {
 			return _playerObject;
 		}
@@ -26,6 +26,10 @@ public class Player : NetworkBehaviour
 	}
 
 	private List<PowerUps> Inventory = new List<PowerUps>() { };
+
+	[SyncVar]
+	public string playerName;
+
 
 	[SyncVar]
 	int _gold;
@@ -71,27 +75,56 @@ public class Player : NetworkBehaviour
 	public event Action<GameObject> OnLaunch;
 	public event Action<GameObject> OnKeel;
 
-	[Server]
-	public void Setup(string playerName, NetworkConnection playerConnection) {
-		if (this.playerName == null || this.playerConnection == null ) {
-			this.playerName = playerName;
-			this.playerConnection = playerConnection;
-			this.TargetSetAuthority (playerConnection);
-		} else {
-			throw new Exception ("Called setup on an Player object that has already been setup. The player was: " + playerName);
+
+
+	public override void OnStartAuthority() {
+		var userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
+		userInterface.PlayerConnected (this);
+		userInterface.OnItemUsed += HandleItemUsed;
+		userInterface.OnClassSelected += CmdSpawnWithClass;
+	}
+
+	// Spawn ship prefab upon class selected
+	[Command]
+	void CmdSpawnWithClass(ClassType type) {
+		GameObject ship = null;
+		switch (type) {
+		case ClassType.SmallShip:
+			ship = (GameObject)Instantiate (SmallShipPrefab);
+			break;
+		case ClassType.MediumShip:
+			ship = (GameObject)Instantiate (MediumShipPrefab);
+			break;
+		case ClassType.LargeShip:
+			ship = (GameObject)Instantiate (LargeShipPrefab);
+			break;
+		}
+
+		this.playerShip = ship;
+		NetworkServer.SpawnWithClientAuthority (ship, this.connectionToClient);
+		TargetShipSpawned (this.connectionToClient, ship.GetComponent<NetworkIdentity>().netId);
+	}
+
+	// Setup the local player state when a ship is spawned
+	[TargetRpc]
+	void TargetShipSpawned(NetworkConnection connection, NetworkInstanceId id) {
+		this.playerShip = ClientScene.FindLocalObject (id);
+		if (this.playerShip = null) {
+			Debug.LogError ("Unable to find the local player. It ought to have had the id: " + id.ToString ());
+			return;
+		}
+
+		if (this.OnLaunch != null) {
+			this.OnLaunch (this.playerShip);
 		}
 	}
 
-	[TargetRpc]
-	private void TargetSetAuthority(NetworkConnection connection) {
-		var GUI = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		GUI.PlayerConnected (this);
-		GUI.ItemUsed += UsePowerUp;
-	}
+
 
 	[Server]
 	public void SendNotification(string message) {
-		this.TargetSendNotification (playerConnection, message);
+		Debug.LogError ("Called SendNotification which has not yet been implemented.");
+		//this.TargetSendNotification (playerConnection, message);
 	}
 
 	[TargetRpc]
@@ -101,8 +134,10 @@ public class Player : NetworkBehaviour
 		}
 	}
 
+
+
 	public void Destroy() {
-		GameObject.Destroy (playerObject);
+		GameObject.Destroy (playerShip);
 		GameObject.Destroy (this);
 	}
 
@@ -112,7 +147,7 @@ public class Player : NetworkBehaviour
 		OnChangePowerups (Inventory);
 	}
 
-	public void UsePowerUp(PowerUps powerUp)
+	void HandleItemUsed(PowerUps powerUp)
 	{
 		if (Inventory.Remove (powerUp)) {
 			OnChangePowerups (Inventory);
