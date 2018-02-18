@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 public class Ship : NetworkBehaviour {
 
 	const float LEMON_JUICE_MULTIPLIER = .25f;
-	public Player player;
 
     [Header("Ship Stat")]
     [SerializeField]
@@ -53,6 +52,9 @@ public class Ship : NetworkBehaviour {
     Rigidbody rb;
 	RectTransform healthBar;
 	UserInterface userInterface;
+
+	public Action<Ship> OnKeel;
+	public Action<Chest> OnChestGet;
 
     void Awake()
     {
@@ -154,7 +156,6 @@ public class Ship : NetworkBehaviour {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
 			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
 			cannonScript.ballDamage = damage;
-			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = -transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -168,7 +169,6 @@ public class Ship : NetworkBehaviour {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
 			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
 			cannonScript.ballDamage = damage;
-			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -184,6 +184,10 @@ public class Ship : NetworkBehaviour {
 				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
 		} else {
+			if (this.OnKeel != null) {
+				this.OnKeel (this);
+			}
+
 			Destroy (this.gameObject);
 		}
 	}
@@ -191,12 +195,11 @@ public class Ship : NetworkBehaviour {
 	void OnTriggerEnter (Collider collision)
 	{
 		if (collision.gameObject.tag == "Chest") {
-
 			Chest chest = collision.gameObject.GetComponent<Chest>();
 
-			player.Gold += chest.gold;
-			player.Fame += chest.fame;
-			player.AddPowerUps(chest.ChestPowerups);
+			if (this.OnChestGet != null) {
+				this.OnChestGet (chest);
+			}
 		}
 	}
 
