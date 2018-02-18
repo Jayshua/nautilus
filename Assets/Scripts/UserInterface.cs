@@ -28,9 +28,9 @@ public class UserInterface : MonoBehaviour {
 
 	Dictionary<PowerUps, Text> itemInventory = new Dictionary<PowerUps, Text>() { }; 
 
-	public event Action<PowerUps> ItemUsed;
+	public event Action<PowerUps> OnItemUsed;
 	public event Action<ClassType> OnClassSelected;
-	public event Action<String> OnNameSelected;
+	public event Action<string> OnNameSelected;
 
 	void Start()
 	{
@@ -55,11 +55,6 @@ public class UserInterface : MonoBehaviour {
 		GuiPanel.SetActive(false);
 		NameSelectionPanel.SetActive(false);
 	}
-		
-	public void ShowClassSelection() {
-		ClassSelectionPanel.SetActive(true);
-		NameSelectionPanel.SetActive(false);
-	}
 
 	public void ShowNameSelection(bool isNameTaken) {
 		NameSelectionPanel.SetActive(true);
@@ -71,14 +66,8 @@ public class UserInterface : MonoBehaviour {
 		}
 	}
 		
-	public void ShowGUI() {
-		NameSelectionPanel.SetActive (false);
-		ClassSelectionPanel.SetActive (false);
-		GuiPanel.SetActive(true);
-	}
-
 	public void SelectClass(string type) {
-		ShowGUI ();
+		ShowPanel (GuiPanel);
 		if (OnClassSelected != null) {
 			switch (type) {
 			case "Black Pearl":
@@ -108,17 +97,6 @@ public class UserInterface : MonoBehaviour {
 		healthBar.sizeDelta = new Vector2 (health * HEALTHBARWIDTH, healthBar.sizeDelta.y);
 	}
 
-	public void UpdateGold (Player player)
-	{
-		goldText.text = player.Gold.ToString();
-	}
-
-	public void UpdateFame (Player player)
-	{
-		fameText.text = player.Fame.ToString ();
-	}
-
-
 
 	void HandleNotification(string notification)
 	{
@@ -130,8 +108,20 @@ public class UserInterface : MonoBehaviour {
 		notificationText.text = "";
 	}
 
-	public void UpdatePowerUps(List <PowerUps> powerUps)
+	public void PlayerConnected(Player player)
 	{
+		ShowPanel (ClassSelectionPanel);
+		player.OnStatsChange += HandleStatsChange;
+		player.OnLogout         += HandlePlayerLogout;
+		player.OnNotification   += HandleNotification;
+		player.OnLaunch         += HandlePlayerLaunch;
+		compass.PlayerConnected (player);
+	}
+
+	void HandleStatsChange(int fame, int gold, List<PowerUps> powerUps) {
+		fameText.text = fame.ToString ();
+		goldText.text = gold.ToString ();
+
 		itemInventory[PowerUps.CannonShot].text = powerUps.Where(p => p == PowerUps.CannonShot).Count().ToString();
 		itemInventory[PowerUps.PowderKeg ].text = powerUps.Where(p => p == PowerUps.PowderKeg ).Count().ToString();
 		itemInventory[PowerUps.Spyglass  ].text = powerUps.Where(p => p == PowerUps.Spyglass  ).Count().ToString();
@@ -139,47 +129,46 @@ public class UserInterface : MonoBehaviour {
 		itemInventory[PowerUps.WindBucket].text = powerUps.Where(p => p == PowerUps.WindBucket).Count().ToString();
 	}
 
-	public void PlayerConnected(Player player)
-	{
-		Player playerClass = player;
-		player.OnGoldChange     += UpdateGold;
-		player.OnFameChange     += UpdateFame;
-		player.OnChangePowerups += UpdatePowerUps;
-		player.OnLogout         += HandlePlayerLogout;
-		player.OnNotification   += HandleNotification;
-		player.OnKeel           += HandlePlayerKeel;
-		compass.PlayerConnected (player);
-	}
-
 	void HandlePlayerLogout(Player player) {
-		player.OnGoldChange -= UpdateGold;
-		player.OnFameChange -= UpdateFame;
-		player.OnLogout     -= HandlePlayerLogout;
-		player.OnNotification -= HandleNotification;
+		player.OnLogout         -= HandlePlayerLogout;
+		player.OnNotification   -= HandleNotification;
+		player.OnLaunch         -= HandlePlayerLaunch;
 	}
 
-	void HandlePlayerKeel(GameObject ship) {
+	void HandlePlayerLaunch(Ship ship) {
+		ShowPanel (GuiPanel);
+		ship.OnKeel += HandleShipKeel;
+	}
+
+	void HandleShipKeel(Ship ship) {
+		ship.OnKeel -= HandleShipKeel;
+		ShowPanel (ClassSelectionPanel);
+	}
+
+	void ShowPanel(GameObject panel) {
 		GuiPanel.SetActive (false);
-		ClassSelectionPanel.SetActive (true);
+		ClassSelectionPanel.SetActive (false);
+		NameSelectionPanel.SetActive (false);
+		panel.SetActive (true);
 	}
 
 	public void SelectPowerUp(string type) {
-		if (ItemUsed != null) {
+		if (OnItemUsed != null) {
 			switch (type) {
 			case "Spyglass":
-				ItemUsed (PowerUps.Spyglass);
+				OnItemUsed (PowerUps.Spyglass);
 				break;
 			case "PowderKeg":
-				ItemUsed (PowerUps.PowderKeg);
+				OnItemUsed (PowerUps.PowderKeg);
 				break;
 			case "CannonShot":
-				ItemUsed (PowerUps.CannonShot);
+				OnItemUsed (PowerUps.CannonShot);
 				break;
 			case "LemonJuice":
-				ItemUsed (PowerUps.LemonJuice);
+				OnItemUsed (PowerUps.LemonJuice);
 				break;
 			case "WindBucket":
-				ItemUsed (PowerUps.WindBucket);
+				OnItemUsed (PowerUps.WindBucket);
 				break;
 			default:
 				Debug.Log ("Unknown powerup type in item selection GUI: " + type);

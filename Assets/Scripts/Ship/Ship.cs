@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 public class Ship : NetworkBehaviour {
 
 	const float LEMON_JUICE_MULTIPLIER = .25f;
-	public Player player;
 
     [Header("Ship Stat")]
     [SerializeField]
@@ -54,9 +53,12 @@ public class Ship : NetworkBehaviour {
 	RectTransform healthBar;
 	UserInterface userInterface;
 
+	public Action<Ship> OnKeel;
+	public Action<Chest> OnChestGet;
+
     void Awake()
     {
-        backwardSpeed = speed / 1.5f;
+        backwardSpeed = speed / 2f;
 		rb = GetComponent<Rigidbody> ();
 		currentHealth = maxHealth;
     }
@@ -64,14 +66,15 @@ public class Ship : NetworkBehaviour {
 	void Start()
 	{
 		userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		if (isLocalPlayer) {
-			GameObject.Find ("Main Camera").GetComponent<CameraFollow>().PlayerCreated (this.transform);
-		}
+	}
+
+	public override void OnStartAuthority() {
+		GameObject.Find ("Main Camera").GetComponent<CameraFollow> ().PlayerCreated (this.transform);
 	}
 	
 	void FixedUpdate ()
     {
-		if (!isLocalPlayer)
+		if (!this.hasAuthority)
 			return;
         Movement();
         Fire();
@@ -85,21 +88,11 @@ public class Ship : NetworkBehaviour {
 
         if (moveVertical > 0)
         {
-			if (wheelBR.motorTorque < 0.0f)
-			{
-				rb.drag = 25f;
-				wheelBR.motorTorque = moveVertical * backwardSpeed * 50f;
-				wheelBL.motorTorque = moveVertical * backwardSpeed * 50f;
-			}
-			wheelBR.motorTorque = moveVertical * speed;
+            wheelBR.motorTorque = moveVertical * speed;
             wheelBL.motorTorque = moveVertical * speed;
         }
         else if (moveVertical < 0)
         {
-			if (wheelBR.motorTorque > 0.0f)
-			{
-				rb.drag = 25f;
-			}
             wheelBR.motorTorque = moveVertical * backwardSpeed;
             wheelBL.motorTorque = moveVertical * backwardSpeed;
         }
@@ -163,7 +156,6 @@ public class Ship : NetworkBehaviour {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
 			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
 			cannonScript.ballDamage = damage;
-			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = -transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
@@ -177,24 +169,25 @@ public class Ship : NetworkBehaviour {
             GameObject cannonBall = (GameObject)Instantiate(cannonBallPrefab, shotPosition.position, Quaternion.identity);
 			CannonBall cannonScript = cannonBall.GetComponent<CannonBall> ();
 			cannonScript.ballDamage = damage;
-			cannonScript.player = player;
             cannonBall.GetComponent<Rigidbody>().velocity = transform.right * projectileSpeed;
             yield return new WaitForSeconds(projectilesOffset);
         }
         StopCoroutine(InstantiateShotsOnRight());
     }
 		
-	public void TakeDamage(float amount, Player enemy)
+	public void TakeDamage(float amount)
 	{
-		if (currentHealth - amount > 0f) {
+		if (currentHealth > 0f) {
 			currentHealth -= amount;
-			Debug.Log (currentHealth);
 
-			if (isLocalPlayer) {
+			if (this.hasAuthority) {
 				userInterface.UpdateHealth (currentHealth / maxHealth);
 			}
 		} else {
-			player.ShipKeeled (enemy);
+			if (this.OnKeel != null) {
+				this.OnKeel (this);
+			}
+
 			Destroy (this.gameObject);
 		}
 	}
@@ -202,12 +195,11 @@ public class Ship : NetworkBehaviour {
 	void OnTriggerEnter (Collider collision)
 	{
 		if (collision.gameObject.tag == "Chest") {
-
 			Chest chest = collision.gameObject.GetComponent<Chest>();
 
-			player.Gold += chest.gold;
-			player.Fame += chest.fame;
-			player.AddPowerUps(chest.ChestPowerups);
+			if (this.OnChestGet != null) {
+				this.OnChestGet (chest);
+			}
 		}
 	}
 
@@ -218,9 +210,8 @@ public class Ship : NetworkBehaviour {
 		if (currentHealth > maxHealth)
 			currentHealth = maxHealth;
 
-		if (isLocalPlayer) {
+		if (this.hasAuthority) {
 			userInterface.UpdateHealth (currentHealth / maxHealth);
 		}
-
 	}
 }
