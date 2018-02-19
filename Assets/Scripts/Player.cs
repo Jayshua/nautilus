@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,14 +20,14 @@ public class Player : NetworkBehaviour
 	public event Action<Player> OnLogout;
 	// Triggered when the player's fame, gold, or powerups change. Argument order is (Fame, Gold, Powerups)
 	public event Action<int, int, SyncListInt> OnStatsChange;
-	// Triggered when a notification to display to the user is recieved
-	public event Action<string> OnNotification;
 	// Triggered when the player chooses a class and their ship is launched
 	public event Action<Ship> OnLaunch;
 	#endregion
 
 
 	#region Properties
+	UserInterface Gui;
+
 	// The player's ship. Will be null if the player hasn't chosen a ship yet or their ship has sunk.	
 	Ship playerShip;
 
@@ -37,6 +38,9 @@ public class Player : NetworkBehaviour
 	#endregion Properties
 
 	void HandleGoldChanged(int newgold) {
+		if (this.OnStatsChange != null) {
+			this.OnStatsChange (this.Gold, this._fame, this.Inventory);
+		}
 		Debug.Log ("Gold Changed. Gold: " + this.Gold.ToString() + ", NewGold: " + newgold.ToString() + "Authority: " + this.hasAuthority + ", Is Server: " + this.isServer + ", Is Client: " + this.isClient + ", Is LocalPlayer: " + this.isLocalPlayer);
 	}
 
@@ -57,11 +61,37 @@ public class Player : NetworkBehaviour
 
 	[Client]
 	public override void OnStartAuthority() {
-		var userInterface = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
-		userInterface.PlayerConnected (this);
-		userInterface.OnItemUsed += HandleItemUsed;
-		userInterface.OnClassSelected += type => CmdSpawnWithClass(type);
+		this.Gui = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
+		this.Gui.PlayerConnected (this);
+		this.Gui.OnItemUsed += HandleItemUsed;
+		this.Gui.OnClassSelected += type => CmdSpawnWithClass(type);
+		this.Gui.OnNameSelected += name => CmdSelectName(name);
 	}
+
+	[Command]
+	void CmdSelectName(string newName) {
+		var otherPlayersWithName = FindObjectOfType<NautilusNetworkManager> ().activePlayers
+			.Where (player => player.name == newName)
+			.Count ();
+
+		if (otherPlayersWithName > 0) {
+			TargetNameTaken (this.connectionToClient, newName);
+		} else {
+			this.playerName = name;
+			TargetNameSet (this.connectionToClient, newName);
+		}
+	}
+
+	[TargetRpc]
+	void TargetNameTaken(NetworkConnection connection, string name) {
+		Gui.ShowNotification ("That name is taken! Please try again.");
+	}
+
+	[TargetRpc]
+	void TargetNameSet(NetworkConnection connection, string name) {
+		Gui.ShowClassSelection();
+	}
+
 
 	[Client]
 	void HandleItemUsed(PowerUps powerUp)
@@ -137,14 +167,6 @@ public class Player : NetworkBehaviour
 		Debug.LogError ("Called SendNotification which has not yet been implemented.");
 		//this.TargetSendNotification (playerConnection, message);
 	}
-
-	[TargetRpc]
-	private void TargetSendNotification(NetworkConnection connection, string message) {
-		if (OnNotification != null) {
-			OnNotification (message);
-		}
-	}
-
 
 	[Server]
 	public void Destroy() {
