@@ -15,6 +15,8 @@ public class Ship : NetworkBehaviour {
     float maxHealth;
     [SerializeField]
     float speed;
+	[SerializeField]
+	float upperSpeedLimit;
     [SerializeField]
     float damage;
 	[SerializeField]
@@ -88,13 +90,33 @@ public class Ship : NetworkBehaviour {
 
         if (moveVertical > 0)
         {
+			if (wheelBR.motorTorque < 0) 
+			{
+				rb.drag = 24f;
+			}
+			if(rb.velocity.magnitude > upperSpeedLimit)
+			{
+				rb.drag = 2f;
+			}
             wheelBR.motorTorque = moveVertical * speed;
             wheelBL.motorTorque = moveVertical * speed;
         }
         else if (moveVertical < 0)
         {
-            wheelBR.motorTorque = moveVertical * backwardSpeed;
-            wheelBL.motorTorque = moveVertical * backwardSpeed;
+			if (wheelBR.motorTorque > 0) 
+			{
+				rb.drag = 24f;
+			}
+
+			if (rb.velocity.magnitude > 10.0f && rb.velocity.magnitude < 15.0f)
+			{
+				rb.drag = 2f;
+				Debug.Log ("Magnitude is below 10.0"); // DEBUG, delete this
+			}
+
+
+			wheelBR.motorTorque = moveVertical * backwardSpeed;
+			wheelBL.motorTorque = moveVertical * backwardSpeed;
         }
         else
         {
@@ -103,6 +125,10 @@ public class Ship : NetworkBehaviour {
 
         wheelFR.steerAngle = moveHorizontal * steerMultiplier;
         wheelFL.steerAngle = moveHorizontal * steerMultiplier;
+
+
+		// DEBUG, Delete this when finish
+		Debug.Log("Magnitude: " + rb.velocity.magnitude);
     }
 		
     public void Fire()
