@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using System.Linq;
 
@@ -118,15 +119,17 @@ public class UserInterface : MonoBehaviour {
 		compass.PlayerConnected (player);
 	}
 
-	void HandleStatsChange(int fame, int gold, List<PowerUps> powerUps) {
+	void HandleStatsChange(int fame, int gold, SyncListInt powerUps) {
 		fameText.text = fame.ToString ();
 		goldText.text = gold.ToString ();
 
-		itemInventory[PowerUps.CannonShot].text = powerUps.Where(p => p == PowerUps.CannonShot).Count().ToString();
-		itemInventory[PowerUps.PowderKeg ].text = powerUps.Where(p => p == PowerUps.PowderKeg ).Count().ToString();
-		itemInventory[PowerUps.Spyglass  ].text = powerUps.Where(p => p == PowerUps.Spyglass  ).Count().ToString();
-		itemInventory[PowerUps.LemonJuice].text = powerUps.Where(p => p == PowerUps.LemonJuice).Count().ToString();
-		itemInventory[PowerUps.WindBucket].text = powerUps.Where(p => p == PowerUps.WindBucket).Count().ToString();
+		foreach (var key in itemInventory) {
+			itemInventory[key.Key].text = "0";
+		}
+
+		foreach (int item in powerUps) {
+			itemInventory [(PowerUps)item].text = (Convert.ToInt32 (itemInventory [(PowerUps)item].text) + 1).ToString();
+		}
 	}
 
 	void HandlePlayerLogout(Player player) {

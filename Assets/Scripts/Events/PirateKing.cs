@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/*
 public class PirateKing : MonoBehaviour, IEvent {
 	
 	public GameObject zonePrefab;
@@ -19,3 +20,4 @@ public class PirateKing : MonoBehaviour, IEvent {
 		}
 	}
 }
+*/

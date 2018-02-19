@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CannonBall : MonoBehaviour {
-
 	public float ballDamage;
 
 	void OnCollisionEnter(Collision other)
