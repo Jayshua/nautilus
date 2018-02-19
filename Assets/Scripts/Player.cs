@@ -93,7 +93,7 @@ public class Player : NetworkBehaviour
 	[Command]
 	void CmdSelectName (string newName)
 	{
-		var otherPlayersWithName = FindObjectOfType<NautilusNetworkManager> ().activePlayers
+		var otherPlayersWithName = FindObjectOfType<GameController> ().activePlayers
 			.Where (player => player.name == newName)
 			.Count ();
 

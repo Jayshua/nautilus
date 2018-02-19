@@ -17,8 +17,8 @@ public class GoldRush : MonoBehaviour, IEvent {
 	List<Zone> zones = new List<Zone> ();
 	public event Action OnEnd;
 
-	public void BeginEvent(NautilusNetworkManager server) {
-		int zoneCount = (int)Math.Ceiling((float)server.activePlayers.Count / 4.0f);
+	public void BeginEvent(GameController controller) {
+		int zoneCount = (int)Math.Ceiling((float)controller.activePlayers.Count / 4.0f);
 
 		var zoneSpawnLocations = new HashSet<GameObject>();
 		while (zoneSpawnLocations.Count < zoneCount) {
@@ -34,7 +34,7 @@ public class GoldRush : MonoBehaviour, IEvent {
 			this.zones.Add (newZone);
 		}
 
-		foreach (var player in server.activePlayers) {
+		foreach (var player in controller.activePlayers) {
 			player.SendNotification ("<size=50>Event: Gold Rush</size>\nBe the first visit as many zones as possible. Trust the compass Luke!");
 		}
 
