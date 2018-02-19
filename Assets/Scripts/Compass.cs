@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 
 public class Compass : MonoBehaviour {
-	GameObject player;
+	Ship playerShip;
 	RectTransform compass;
 	RectTransform missionMarker;
 	Vector3 northDirection;
@@ -22,21 +22,21 @@ public class Compass : MonoBehaviour {
 	}
 
 	void updateCompass() {
-		if (player != null) {
-			northDirection.z = player.transform.eulerAngles.y;
+		if (playerShip != null) {
+			northDirection.z = playerShip.gameObject.transform.eulerAngles.y;
 			compass.localEulerAngles = northDirection;
 		} else {
-			Debug.Log ("Null");
+			//Debug.Log ("Null");
 		}
 	}
 
 	void updateMarker() {
-		if (player != null && mission != Vector3.zero) {
+		if (playerShip != null && mission != Vector3.zero) {
 			if (missionMarker.gameObject.activeSelf == false) {
 				missionMarker.gameObject.SetActive (true);
 			}
 
-			Vector3 direction = mission - player.transform.position;
+			Vector3 direction = mission - playerShip.gameObject.transform.position;
 			Quaternion missionDirection = Quaternion.LookRotation (direction);
 			missionDirection.z = -missionDirection.y;
 			missionDirection.x = 0f;
@@ -59,8 +59,8 @@ public class Compass : MonoBehaviour {
 				GameObject.FindGameObjectsWithTag ("Mission")
 					.Select(m => m.transform.position)
 					.Aggregate (Vector3.zero, (nearestSoFar, thisMission) => {
-						var distanceToNearest = Vector3.Distance (nearestSoFar, player.transform.position);
-						var distanceToThis = Vector3.Distance (thisMission, player.transform.position);
+						var distanceToNearest = Vector3.Distance (nearestSoFar, playerShip.gameObject.transform.position);
+						var distanceToThis = Vector3.Distance (thisMission, playerShip.gameObject.transform.position);
 						if (nearestSoFar == Vector3.zero || distanceToThis < distanceToNearest) {
 							return thisMission;
 						} else {
@@ -76,24 +76,28 @@ public class Compass : MonoBehaviour {
 	}
 
 	public void PlayerConnected(Player player) {
-		player.OnKeel += HandlePlayerKeel;
 		player.OnLaunch += HandlePlayerLaunch;
 		player.OnLogout += HandlePlayerLogout;
-		this.player = player.gameObject;
 	}
 
-	void HandlePlayerKeel(GameObject ship) {
-		this.player = null;
+	void HandlePlayerKeel(Ship ship) {
+		ship.OnKeel -= HandlePlayerKeel;
+		this.playerShip = null;
 	}
 
-	void HandlePlayerLaunch(GameObject ship) {
-		this.player = ship;
+	void HandlePlayerLaunch(Ship ship) {
+		ship.OnKeel += HandlePlayerKeel;
+		this.playerShip = ship;
 	}
 
 	void HandlePlayerLogout(Player player) {
 		player.OnLogout -= HandlePlayerLogout;
 		player.OnLaunch -= HandlePlayerLaunch;
-		player.OnKeel -= HandlePlayerKeel;
-		this.player = null;
+
+		if (this.playerShip != null) {
+			this.playerShip.OnKeel -= HandlePlayerKeel;
+		}
+
+		this.playerShip = null;
 	}
 }

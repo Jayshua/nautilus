@@ -10,7 +10,7 @@ public class Zone : NetworkBehaviour {
 	void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Player")) {
-			if (other.GetComponent<NetworkIdentity>().isLocalPlayer){
+			if (other.GetComponent<NetworkIdentity>().hasAuthority){
 				if (!entered)
 				{
 					entered = true;
