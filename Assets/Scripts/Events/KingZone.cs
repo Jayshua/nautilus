@@ -33,7 +33,7 @@ public class KingZone : MonoBehaviour {
 		if (shipInZone == 1) {
 			if (Time.time > elapsedTime) {
 				elapsedTime = Time.time + cooldown;
-				player.Gold += goldAmount;
+				//player.Gold += goldAmount;
 			}
 		} 
 	}
