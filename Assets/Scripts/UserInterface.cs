@@ -99,10 +99,15 @@ public class UserInterface : MonoBehaviour {
 	}
 
 
-	void HandleNotification(string notification)
+	public void ShowNotification(string notification)
 	{
 		notificationText.text = notification;
 		Invoke ("RemoveNotification", 10);
+	}
+
+	public void ShowClassSelection()
+	{
+		ShowPanel (ClassSelectionPanel);
 	}
 
 	void RemoveNotification() {
@@ -111,11 +116,10 @@ public class UserInterface : MonoBehaviour {
 
 	public void PlayerConnected(Player player)
 	{
-		ShowPanel (ClassSelectionPanel);
+		ShowPanel (NameSelectionPanel);
 		player.OnStatsChange += HandleStatsChange;
-		player.OnLogout         += HandlePlayerLogout;
-		player.OnNotification   += HandleNotification;
-		player.OnLaunch         += HandlePlayerLaunch;
+		player.OnLogout += HandlePlayerLogout;
+		player.OnLaunch += HandlePlayerLaunch;
 		compass.PlayerConnected (player);
 	}
 
@@ -133,9 +137,8 @@ public class UserInterface : MonoBehaviour {
 	}
 
 	void HandlePlayerLogout(Player player) {
-		player.OnLogout         -= HandlePlayerLogout;
-		player.OnNotification   -= HandleNotification;
-		player.OnLaunch         -= HandlePlayerLaunch;
+		player.OnLogout -= HandlePlayerLogout;
+		player.OnLaunch -= HandlePlayerLaunch;
 	}
 
 	void HandlePlayerLaunch(Ship ship) {
