@@ -27,7 +27,6 @@ public class Player : NetworkBehaviour
 	// Triggered when the player chooses a class and their ship is launched
 	public event Action<Ship> OnLaunch;
 
-
 	public event Action<int> OnGoldChanged;
 	public event Action<int> OnFameChanged;
 	public event Action<SyncListInt> OnInventoryChanged;
@@ -121,7 +120,29 @@ public class Player : NetworkBehaviour
 	[Command]
 	void CmdItemUsed (PowerUps powerUp)
 	{
-		Inventory.Remove ((int)powerUp);
+		if (Inventory.Remove ((int)powerUp)) {
+			
+			switch (powerUp) {
+			case PowerUps.LemonJuice:
+				this.playerShip.LemonJuiceHeal ();
+				break;
+			case PowerUps.CannonShot:
+				this.playerShip.CannonShot ();
+				break;
+			case PowerUps.PowderKeg:
+				this.playerShip.PowderKeg ();
+				break;
+			case PowerUps.WindBucket:
+				this.playerShip.WindBucket ();
+				break;
+			case PowerUps.Spyglass:
+				//do spyglass on player class
+				break;
+			default:
+				Debug.Log ("Not a powerup!");
+				break;
+			}	
+		}
 	}
 
 	// Spawn ship prefab upon class selected
