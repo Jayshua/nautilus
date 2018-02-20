@@ -9,6 +9,9 @@ public class Player : NetworkBehaviour
 {
 	// Editor Configuration Points
 
+	const float GOLD_MULTIPLIER = 1.5f;
+	float goldMultiplier = 1f;
+
 	#region Editor Variables
 
 	public GameObject SmallShipPrefab;
@@ -120,28 +123,16 @@ public class Player : NetworkBehaviour
 	[Command]
 	void CmdItemUsed (PowerUps powerUp)
 	{
-		if (Inventory.Remove ((int)powerUp)) {
-			
-			switch (powerUp) {
-			case PowerUps.LemonJuice:
-				this.playerShip.LemonJuiceHeal ();
-				break;
-			case PowerUps.CannonShot:
-				this.playerShip.CannonShot ();
-				break;
-			case PowerUps.PowderKeg:
-				this.playerShip.PowderKeg ();
-				break;
-			case PowerUps.WindBucket:
-				this.playerShip.WindBucket ();
-				break;
-			case PowerUps.Spyglass:
-				//do spyglass on player class
-				break;
-			default:
-				Debug.Log ("Not a powerup!");
-				break;
-			}	
+		int powerUpInt =  (int)powerUp;
+		if (Inventory.Remove (powerUpInt)) {
+			if (powerUp == PowerUps.Spyglass){
+				StartCoroutine (SpyglassRoutine ());
+				Debug.Log ("Spyglass used!");
+			}
+			else {
+				Debug.Log ("Running ship item script");
+				playerShip.UseItem (powerUp);
+			}
 		}
 	}
 
@@ -202,7 +193,7 @@ public class Player : NetworkBehaviour
 		Debug.Log ("Cmd Update States");
 		var chestScript = chest.GetComponent<Chest> ();
 		this.Fame += chestScript.fame;
-		this.Gold += chestScript.gold;
+		this.Gold += (int)(chestScript.gold * goldMultiplier);
 
 		foreach (var item in chestScript.ChestPowerups) {
 			this.Inventory.Add ((int)item);
@@ -221,5 +212,16 @@ public class Player : NetworkBehaviour
 	{
 		GameObject.Destroy (playerShip.gameObject);
 		GameObject.Destroy (this);
+	}
+
+	[Client]
+	IEnumerator SpyglassRoutine()
+	{
+		goldMultiplier = GOLD_MULTIPLIER;
+		Debug.Log ("Spyglass! Started");
+		yield return new WaitForSeconds(5f);
+		Debug.Log ("Spyglass! Stopped");
+		goldMultiplier = 1f;
+		StopCoroutine (SpyglassRoutine ());
 	}
 }

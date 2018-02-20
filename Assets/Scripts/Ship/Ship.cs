@@ -24,6 +24,8 @@ public class Ship : NetworkBehaviour {
 	[SerializeField]
 	float currentHealth;
     float backwardSpeed;
+	float speedMultiplier = 1f;
+	float damageMultiplier = 1f;
 
     [Header("Wheels")]
     [SerializeField]
@@ -100,8 +102,8 @@ public class Ship : NetworkBehaviour {
 			{
 				rb.drag = 2f;
 			}
-            wheelBR.motorTorque = moveVertical * speed;
-            wheelBL.motorTorque = moveVertical * speed;
+			wheelBR.motorTorque = moveVertical * speed * speedMultiplier;
+			wheelBL.motorTorque = moveVertical * speed * speedMultiplier;
         }
         else if (moveVertical < 0)
         {
@@ -231,40 +233,51 @@ public class Ship : NetworkBehaviour {
 		}
 	}
 
-	public void LemonJuiceHeal()
+	IEnumerator CannonShotRoutine()
 	{
-		currentHealth *= LEMON_JUICE_MULTIPLIER;
-
-		if (currentHealth > maxHealth)
-			currentHealth = maxHealth;
-
-		if (this.hasAuthority) {
-			userInterface.UpdateHealth (currentHealth / maxHealth);
-		}
-	}
-
-	public void CannonShot()
-	{
-		damage *= CANNON_SHOT_MULTIPLIER;
-		Debug.Log ("Cannon Shot!");
-	}
-
-	public void PowderKeg()
-	{
-		Debug.Log ("PowderKeg!");
-	}
-
-	public void WindBucket()
-	{
-		speed *= WIND_BUCKET_MULTIPLIER;
-
-		WindBucketRoutine();
-
-		Debug.Log ("Wind Bucket!");
-	}
-
-	IEnumerable WindBucketRoutine()
-	{
+		damageMultiplier = CANNON_SHOT_MULTIPLIER;
+		Debug.Log ("Cannon Shot! Started");
 		yield return new WaitForSeconds(5f);
+		Debug.Log ("Cannon Shot! Stopped");
+		damageMultiplier = 1f;
+		StopCoroutine (CannonShotRoutine ());
+	}
+		
+	IEnumerator WindBucketRoutine()
+	{
+		speedMultiplier = WIND_BUCKET_MULTIPLIER;
+		Debug.Log ("Wind Bucket! Started");
+		yield return new WaitForSeconds(5f);
+		Debug.Log ("Wind Bucket! Stopped");
+		speedMultiplier = 1f;
+		StopCoroutine (WindBucketRoutine ());
+	}
+		
+	public void UseItem(PowerUps powerUp)
+	{
+		switch (powerUp) {
+		case PowerUps.LemonJuice:
+				currentHealth *= LEMON_JUICE_MULTIPLIER;
+
+				if (currentHealth > maxHealth)
+					currentHealth = maxHealth;
+
+				if (this.hasAuthority) {
+					userInterface.UpdateHealth (currentHealth / maxHealth);
+				}
+				break;
+		case PowerUps.CannonShot:
+			StartCoroutine(CannonShotRoutine());
+			break;
+		case PowerUps.PowderKeg:
+			Debug.Log ("PowderKeg!");
+			break;
+		case PowerUps.WindBucket:
+			StartCoroutine (WindBucketRoutine());
+			break;
+		default:
+			Debug.Log ("Not a powerup!");
+			break;
+		}	
 	}
 }
