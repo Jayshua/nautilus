@@ -8,7 +8,9 @@ using UnityEngine.Networking;
 [RequireComponent(typeof(Rigidbody))]
 public class Ship : NetworkBehaviour {
 
-	const float LEMON_JUICE_MULTIPLIER = .25f;
+	const float LEMON_JUICE_MULTIPLIER = 1.25f;
+	const float WIND_BUCKET_MULTIPLIER = 1.5f;
+	const float CANNON_SHOT_MULTIPLIER = 1.5f;
 
     [Header("Ship Stat")]
     [SerializeField]
@@ -111,7 +113,7 @@ public class Ship : NetworkBehaviour {
 			if (rb.velocity.magnitude > 10.0f && rb.velocity.magnitude < 15.0f)
 			{
 				rb.drag = 2f;
-				Debug.Log ("Magnitude is below 10.0"); // DEBUG, delete this
+				//Debug.Log ("Magnitude is below 10.0"); // DEBUG, delete this
 			}
 
 
@@ -128,7 +130,7 @@ public class Ship : NetworkBehaviour {
 
 
 		// DEBUG, Delete this when finish
-		Debug.Log("Magnitude: " + rb.velocity.magnitude);
+		//Debug.Log("Magnitude: " + rb.velocity.magnitude);
     }
 		
     public void Fire()
@@ -239,5 +241,30 @@ public class Ship : NetworkBehaviour {
 		if (this.hasAuthority) {
 			userInterface.UpdateHealth (currentHealth / maxHealth);
 		}
+	}
+
+	public void CannonShot()
+	{
+		damage *= CANNON_SHOT_MULTIPLIER;
+		Debug.Log ("Cannon Shot!");
+	}
+
+	public void PowderKeg()
+	{
+		Debug.Log ("PowderKeg!");
+	}
+
+	public void WindBucket()
+	{
+		speed *= WIND_BUCKET_MULTIPLIER;
+
+		WindBucketRoutine();
+
+		Debug.Log ("Wind Bucket!");
+	}
+
+	IEnumerable WindBucketRoutine()
+	{
+		yield return new WaitForSeconds(5f);
 	}
 }

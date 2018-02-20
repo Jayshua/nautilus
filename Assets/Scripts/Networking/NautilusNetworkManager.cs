@@ -7,13 +7,8 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 
 
-
-// Controls the network communication on both the client and the server
-// Delegates most of the work to the NautilusClient and NautilusServer
-// classes which run on the client and the server respectively.
 public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 {
-	public List<Player> activePlayers = new List<Player> ();
 	public event Action<Player> OnPlayerJoin;
 	public event Action<Player> OnPlayerLeave;
 
@@ -21,26 +16,18 @@ public class NautilusNetworkManager : UnityEngine.Networking.NetworkManager
 	public override void OnServerAddPlayer(NetworkConnection connection, short playerControllerId) {
 		base.OnServerAddPlayer (connection, playerControllerId);
 
-		Player newPlayer = connection.playerControllers [playerControllerId].gameObject.GetComponent<Player> ();
-		activePlayers.Add (newPlayer);
-
 		if (this.OnPlayerJoin != null) {
+			Player newPlayer = connection.playerControllers [playerControllerId].gameObject.GetComponent<Player> ();
 			this.OnPlayerJoin (newPlayer);
 		}
 	}
 
 	// Remove the player from the active player list
 	public override void OnServerRemovePlayer(NetworkConnection connection, PlayerController playerController) {
-		var leavingPlayer = playerController.gameObject.GetComponent<Player> ();
-
-		// Also remove from the list
 		if (OnPlayerLeave != null) {
+			var leavingPlayer = playerController.gameObject.GetComponent<Player> ();
 			this.OnPlayerLeave (leavingPlayer);
 		}
-
-		activePlayers = activePlayers
-			.Where (player => player.connectionToClient != connection)
-			.ToList ();
 
 		base.OnServerRemovePlayer (connection, playerController);
 	}

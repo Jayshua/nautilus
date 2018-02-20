@@ -23,9 +23,13 @@ public class Player : NetworkBehaviour
 	// Triggered when the player logs out, just before this object is destroyed
 	public event Action<Player> OnLogout;
 	// Triggered when the player's fame, gold, or powerups change. Argument order is (Fame, Gold, Powerups)
-	public event Action<int, int, SyncListInt> OnStatsChange;
+	//public event Action<int, int, SyncListInt> OnStatsChange;
 	// Triggered when the player chooses a class and their ship is launched
 	public event Action<Ship> OnLaunch;
+
+	public event Action<int> OnGoldChanged;
+	public event Action<int> OnFameChanged;
+	public event Action<SyncListInt> OnInventoryChanged;
 
 	#endregion
 
@@ -45,8 +49,8 @@ public class Player : NetworkBehaviour
 	[Client]
 	void HandleGoldChanged (int newGold)
 	{
-		if (this.OnStatsChange != null) {
-			this.OnStatsChange (this.Fame, newGold, this.Inventory);
+		if (this.OnGoldChanged != null) {
+			this.OnGoldChanged(newGold);
 		}
 		Debug.Log ("Gold Changed. Gold: " + this.Gold.ToString () + ", NewGold: " + newGold.ToString () + "Authority: " + this.hasAuthority + ", Is Server: " + this.isServer + ", Is Client: " + this.isClient + ", Is LocalPlayer: " + this.isLocalPlayer);
 	}
@@ -54,8 +58,8 @@ public class Player : NetworkBehaviour
 	[Client]
 	void HandleFameChanged (int newFame)
 	{
-		if (this.OnStatsChange != null) {
-			this.OnStatsChange (this.Fame, this.Gold, this.Inventory);
+		if (this.OnFameChanged != null) {
+			this.OnFameChanged (newFame);
 		}
 		Debug.Log ("Fame Changed. Fame: " + this.Fame.ToString () + ", NewFame: " + newFame.ToString () + "Authority: " + this.hasAuthority + ", Is Server: " + this.isServer + ", Is Client: " + this.isClient + ", Is LocalPlayer: " + this.isLocalPlayer);
 	}
@@ -63,8 +67,8 @@ public class Player : NetworkBehaviour
 	[Client]
 	void HandleInventoryChanged (SyncListInt.Operation inventory, int index)
 	{
-		if (this.OnStatsChange != null) {
-			this.OnStatsChange (this.Fame, this.Gold, this.Inventory);
+		if (this.OnInventoryChanged != null) {
+			this.OnInventoryChanged (this.Inventory);
 		}
 	}
 
@@ -88,7 +92,7 @@ public class Player : NetworkBehaviour
 	[Command]
 	void CmdSelectName (string newName)
 	{
-		var otherPlayersWithName = FindObjectOfType<NautilusNetworkManager> ().activePlayers
+		var otherPlayersWithName = FindObjectOfType<GameController> ().activePlayers
 			.Where (player => player.name == newName)
 			.Count ();
 
@@ -116,7 +120,29 @@ public class Player : NetworkBehaviour
 	[Command]
 	void CmdItemUsed (PowerUps powerUp)
 	{
-		Inventory.Remove ((int)powerUp);
+		if (Inventory.Remove ((int)powerUp)) {
+			
+			switch (powerUp) {
+			case PowerUps.LemonJuice:
+				this.playerShip.LemonJuiceHeal ();
+				break;
+			case PowerUps.CannonShot:
+				this.playerShip.CannonShot ();
+				break;
+			case PowerUps.PowderKeg:
+				this.playerShip.PowderKeg ();
+				break;
+			case PowerUps.WindBucket:
+				this.playerShip.WindBucket ();
+				break;
+			case PowerUps.Spyglass:
+				//do spyglass on player class
+				break;
+			default:
+				Debug.Log ("Not a powerup!");
+				break;
+			}	
+		}
 	}
 
 	// Spawn ship prefab upon class selected

@@ -117,16 +117,23 @@ public class UserInterface : MonoBehaviour {
 	public void PlayerConnected(Player player)
 	{
 		ShowPanel (NameSelectionPanel);
-		player.OnStatsChange += HandleStatsChange;
+		player.OnFameChanged += HandleFameChanged;
+		player.OnGoldChanged += HandleGoldChanged;
+		player.OnInventoryChanged += HandleInventoryChanged;
 		player.OnLogout += HandlePlayerLogout;
 		player.OnLaunch += HandlePlayerLaunch;
 		compass.PlayerConnected (player);
 	}
 
-	void HandleStatsChange(int fame, int gold, SyncListInt powerUps) {
+	void HandleFameChanged(int fame) {
 		fameText.text = fame.ToString ();
+	}
+		
+	void HandleGoldChanged(int gold) {
 		goldText.text = gold.ToString ();
+	}
 
+	void HandleInventoryChanged(SyncListInt powerUps) {
 		foreach (var key in itemInventory) {
 			itemInventory[key.Key].text = "0";
 		}
