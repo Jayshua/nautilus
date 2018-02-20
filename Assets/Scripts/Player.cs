@@ -49,25 +49,23 @@ public class Player : NetworkBehaviour
 	[SyncVar (hook="HandleFameChanged")] int Fame;
 	#endregion Properties
 
-	[Client]
+	//[Client]
 	void HandleGoldChanged (int newGold)
 	{
 		if (this.OnGoldChanged != null) {
 			this.OnGoldChanged(newGold);
 		}
-		Debug.Log ("Gold Changed. Gold: " + this.Gold.ToString () + ", NewGold: " + newGold.ToString () + "Authority: " + this.hasAuthority + ", Is Server: " + this.isServer + ", Is Client: " + this.isClient + ", Is LocalPlayer: " + this.isLocalPlayer);
 	}
 
-	[Client]
+	//[Client]
 	void HandleFameChanged (int newFame)
 	{
 		if (this.OnFameChanged != null) {
 			this.OnFameChanged (newFame);
 		}
-		Debug.Log ("Fame Changed. Fame: " + this.Fame.ToString () + ", NewFame: " + newFame.ToString () + "Authority: " + this.hasAuthority + ", Is Server: " + this.isServer + ", Is Client: " + this.isClient + ", Is LocalPlayer: " + this.isLocalPlayer);
 	}
 		
-	[Client]
+	//[Client]
 	void HandleInventoryChanged (SyncListInt.Operation inventory, int index)
 	{
 		if (this.OnInventoryChanged != null) {
@@ -127,10 +125,8 @@ public class Player : NetworkBehaviour
 		if (Inventory.Remove (powerUpInt)) {
 			if (powerUp == PowerUps.Spyglass){
 				StartCoroutine (SpyglassRoutine ());
-				Debug.Log ("Spyglass used!");
 			}
 			else {
-				Debug.Log ("Running ship item script");
 				playerShip.UseItem (powerUp);
 			}
 		}
@@ -183,14 +179,12 @@ public class Player : NetworkBehaviour
 	[Client]
 	void HandleChestGet (Chest chest)
 	{
-		Debug.Log ("Ship Collision with Chest in player class");
 		CmdUpdateStats (chest.gameObject);
 	}
 
 	[Command]
 	void CmdUpdateStats (GameObject chest)
 	{
-		Debug.Log ("Cmd Update States");
 		var chestScript = chest.GetComponent<Chest> ();
 		this.Fame += chestScript.fame;
 		this.Gold += (int)(chestScript.gold * goldMultiplier);
@@ -218,9 +212,7 @@ public class Player : NetworkBehaviour
 	IEnumerator SpyglassRoutine()
 	{
 		goldMultiplier = GOLD_MULTIPLIER;
-		Debug.Log ("Spyglass! Started");
 		yield return new WaitForSeconds(5f);
-		Debug.Log ("Spyglass! Stopped");
 		goldMultiplier = 1f;
 		StopCoroutine (SpyglassRoutine ());
 	}
