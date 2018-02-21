@@ -28,10 +28,12 @@ public class SpawnChest : NetworkBehaviour {
 			if (spotUsed[currentIndex] == false){ //
 				GameObject chest = (GameObject)Instantiate (ChestPrefab, ChestSpawnLocations [currentIndex].position, transform.rotation); // Create and place a chest
 				Chest chestScript = chest.GetComponent<Chest> ();
-				chestScript.gold = Random.Range(25, 250); // Give the player a random amount of gold
-				chestScript.fame = chestScript.gold; // Give the player the same amount of fame as gold
-				chestScript.ChestPowerups.Add((PowerUps) Random.Range(0,5));
-				int current = currentIndex; // 
+				chestScript.spoils = new Spoils () {
+					Gold = Random.Range(25, 250),
+					Fame = Random.Range(25, 250),
+					Powerups = new[] {(PowerUps) Random.Range(0,5)},
+				};
+				int current = currentIndex;
 				chestScript.OnDestroy += () => spotUsed [current] = false; // When a chest is destroyed
 				NetworkServer.Spawn (chest); // Spawn a chest object
 				spotUsed[currentIndex] = true; // 

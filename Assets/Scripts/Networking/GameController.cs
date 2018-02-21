@@ -13,21 +13,16 @@ public class GameController : NetworkBehaviour {
 	public override void OnStartServer() {
 		networkManager.OnPlayerJoin += player => activePlayers.Add (player);
 		networkManager.OnPlayerLeave += player => activePlayers = activePlayers.Where (p => p != player).ToList ();
-		StartCoroutine (gameLoop());
+		Invoke ("beginEvent", 5.0f);
 	}
 
-	IEnumerator gameLoop() {
-		IEvent currentEvent;
+	void beginEvent() {
+		IEvent currentEvent = (IEvent)Instantiate (eventPrefabs [0]).GetComponent (typeof(IEvent));
+		currentEvent.BeginEvent (this);
+		currentEvent.OnEnd += handleEventEnd;
+	}
 
-		while (true) {
-			// Wait 5 minutes in between events
-			//yield return new WaitForSeconds (5.0f * 60.0f);
-			yield return new WaitForSeconds(1.0f);
-
-			currentEvent = (IEvent)Instantiate (eventPrefabs [0]).GetComponent (typeof(IEvent));
-			currentEvent.BeginEvent (this);
-
-			yield return new WaitForSeconds (5.0f * 60.0f);
-		}
+	void handleEventEnd() {
+		Invoke ("beginEvent", 10.0f);
 	}
 }

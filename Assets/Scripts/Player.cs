@@ -82,6 +82,7 @@ public class Player : NetworkBehaviour
 	[Client]
 	public override void OnStartAuthority ()
 	{
+		Debug.Log ("On start authority");
 		this.Gui = GameObject.Find ("User Interface").GetComponent<UserInterface> ();
 		this.Gui.PlayerConnected (this);
 		this.Gui.OnItemUsed      += type => CmdItemUsed (type);
@@ -179,17 +180,18 @@ public class Player : NetworkBehaviour
 	[Client]
 	void HandleChestGet (Chest chest)
 	{
-		CmdUpdateStats (chest.gameObject);
+		CmdTakeSpoils (chest.spoils);
+
+
 	}
 
 	[Command]
-	void CmdUpdateStats (GameObject chest)
+	void CmdTakeSpoils (Spoils spoils)
 	{
-		var chestScript = chest.GetComponent<Chest> ();
-		this.Fame += chestScript.fame;
-		this.Gold += (int)(chestScript.gold * goldMultiplier);
+		this.Fame += spoils.Fame;
+		this.Gold += (int)(spoils.Gold * goldMultiplier);
 
-		foreach (var item in chestScript.ChestPowerups) {
+		foreach (var item in spoils.Powerups) {
 			this.Inventory.Add ((int)item);
 		}
 	}
@@ -197,8 +199,12 @@ public class Player : NetworkBehaviour
 	[Server]
 	public void SendNotification (string message)
 	{
-		Debug.LogError ("Called SendNotification which has not yet been implemented.");
-		//this.TargetSendNotification (playerConnection, message);
+		TargetSendNotification (this.connectionToClient, message);
+	}
+
+	[TargetRpc]
+	public void TargetSendNotification(NetworkConnection connection, string message) {
+		Gui.ShowNotification(message);
 	}
 
 	[Server]

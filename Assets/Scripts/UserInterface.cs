@@ -105,13 +105,13 @@ public class UserInterface : MonoBehaviour {
 		Invoke ("RemoveNotification", 10);
 	}
 
+	void RemoveNotification() {
+		notificationText.text = "";
+	}
+
 	public void ShowClassSelection()
 	{
 		ShowPanel (ClassSelectionPanel);
-	}
-
-	void RemoveNotification() {
-		notificationText.text = "";
 	}
 
 	public void PlayerConnected(Player player)

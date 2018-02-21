@@ -10,9 +10,14 @@ public class Compass : MonoBehaviour {
 	Vector3 northDirection;
 	Vector3 mission;
 
-	void Start () {
+	void OnEnable () {
 		compass = GameObject.Find("Compass Board").GetComponent<RectTransform> ();
-		missionMarker = GameObject.Find ("Mission Marker").GetComponent<RectTransform> ();
+		var missionGameObject = GameObject.Find ("Mission Marker");
+
+		if (missionMarker == null) {
+			missionMarker = GameObject.Find ("Mission Marker").GetComponent<RectTransform> ();
+		}
+
 		StartCoroutine (FindMission ());
 	}
 
@@ -25,8 +30,6 @@ public class Compass : MonoBehaviour {
 		if (playerShip != null) {
 			northDirection.z = playerShip.gameObject.transform.eulerAngles.y;
 			compass.localEulerAngles = northDirection;
-		} else {
-			//Debug.Log ("Null");
 		}
 	}
 
@@ -55,6 +58,12 @@ public class Compass : MonoBehaviour {
 
 	IEnumerator FindMission() {
 		while (true) {
+			yield return new WaitForSeconds(1.0f);
+
+			if (playerShip == null) {
+				continue;
+			}
+
 			Vector3 newMission =
 				GameObject.FindGameObjectsWithTag ("Mission")
 					.Select(m => m.transform.position)
@@ -68,10 +77,7 @@ public class Compass : MonoBehaviour {
 						}
 					});
 
-
 			this.mission = newMission;
-
-			yield return new WaitForSeconds(1.0f);
 		}
 	}
 

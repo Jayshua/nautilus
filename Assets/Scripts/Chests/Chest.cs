@@ -6,12 +6,7 @@ using UnityEngine.Networking;
 
 public class Chest : MonoBehaviour
 {
-
-	public int gold,
-			   fame;
-
-	public List<PowerUps> ChestPowerups = new List<PowerUps> () { };
-
+	public Spoils spoils;
 	public event Action OnDestroy;
 
 	[SerializeField]

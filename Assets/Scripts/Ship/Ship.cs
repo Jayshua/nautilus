@@ -263,6 +263,7 @@ public class Ship : NetworkBehaviour
 		}	
 	}
 
+	[Client]
 	public void LemonJuiceHeal ()
 	{
 		currentHealth *= LEMON_JUICE_MULTIPLIER;
