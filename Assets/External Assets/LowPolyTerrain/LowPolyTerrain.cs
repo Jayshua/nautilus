@@ -217,7 +217,7 @@ public class LowPolyTerrain
 		}
 
 		_CachedCamera = Camera.main.transform;
-		_MaterialBaseColor = TerrainMaterial.GetColor("_Color");
+//		_MaterialBaseColor = TerrainMaterial.GetColor("_Color");
 
 		// Initialize all the chunks
 		foreach (var chunk in _Chunks)

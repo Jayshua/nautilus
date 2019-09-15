@@ -42,27 +42,19 @@ public class GoldRush : MonoBehaviour, IEvent {
 			var newChest = GameObject.Instantiate (chestPrefab, zoneSpawn.transform);
 			var newChestScript = newChest.GetComponent<Chest>();
 			newChestScript.spoils = new Spoils() {
-				Gold = 500,
-				Fame = 0,
-				Powerups = new PowerUps[] {},
+				Gold = 200,
+				Fame = 400,
+				Powerups = new int[] {},
 			};
 			NetworkServer.Spawn (newChest);
 			this.chests.Add (newChestScript);
 		}
 
-		foreach (var player in gameController.activePlayers) {
-			player.SendNotification ("<size=50>Event: Gold Rush</size>\nBe the first visit as many zones as possible. Trust the compass Luke!");
+		foreach (var player in gameController.allPlayers) {
+			player.SendNotification (UserInterface.BuildHeadingNotification("Event: Gold Rush", "Be the first to visit as many gold zones as possible. Trust the compass Luke!"));
 		}
 
 		StartCoroutine (CheckIfDone ());
-
-		//server.OnPlayerJoin += HandlePlayerJoin;
-
-		// Create coin zones
-		// Create the chests
-		// Notify players
-		// Listen for new players
-		// Listen for lost players
 	}
 
 	IEnumerator CheckIfDone() {
@@ -71,11 +63,8 @@ public class GoldRush : MonoBehaviour, IEvent {
 			this.chests = this.chests.Where (c => c != null).ToList ();
 			int newChestCount = this.chests.Count;
 
-			Debug.Log(String.Format("Old: {0}, New: {1}", previousChestCount, newChestCount));
-
 			if (previousChestCount != newChestCount && newChestCount != 0) {
-				Debug.Log ("Not equal");
-				foreach (var player in this.gameController.activePlayers) {
+				foreach (var player in this.gameController.allPlayers) {
 					player.SendNotification (String.Format ("Only {0} treasure{1} left!", newChestCount, newChestCount > 1 ? "s" : ""));
 				}
 			}
@@ -85,8 +74,8 @@ public class GoldRush : MonoBehaviour, IEvent {
 					this.OnEnd ();
 				}
 
-				foreach (var player in this.gameController.activePlayers) {
-					player.SendNotification ("<size=50>Event Complete!</size>\nCongratulamations! The event is complete!");
+				foreach (var player in this.gameController.allPlayers) {
+					player.SendNotification (UserInterface.BuildHeadingNotification("Event: Gold Rush", "The event is complete. Congratulations to all captains!"));
 				}
 
 				foreach (var zone in this.zones) {
@@ -99,14 +88,4 @@ public class GoldRush : MonoBehaviour, IEvent {
 			yield return new WaitForSeconds (1);
 		}
 	}
-
-	// Ongoing:
-	// - Update compass markers
-	// - End when all zones are found
-
-	// Cleanup:
-	// - Remove coin zones
-	// - Remove compass markers
-	// - Remove player messages
-	// - Remove event listeners on the server
 }

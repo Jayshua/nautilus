@@ -6,6 +6,12 @@ TagManager:
   tags:
   - Chest
   - Mission
+  - Water
+  - TerrainCollider
+  - Barrel
+  - CannonBall
+  - Sail
+  - OffMap
   layers:
   - Default
   - TransparentFX
@@ -16,8 +22,8 @@ TagManager:
   - 
   - 
   - Wheels
-  - 
-  - 
+  - SpawnAvoid
+  - OffMap
   - 
   - 
   - 

@@ -2,49 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-//using System;
 
-public class SpawnChest : NetworkBehaviour {
+public class SpawnChest : NetworkBehaviour
+{
 
-	public GameObject ChestPrefab;
+	[SerializeField] GameObject ChestPrefab;
+	[SerializeField] GameController GameController;
 
-	public Transform[] ChestSpawnLocations;
-
-	bool[] spotUsed;
-
-	// Use this for initialization
-	void Start () {
-		if (isServer) {
-		spotUsed = new bool[ChestSpawnLocations.Length]; // Assign the number of spawn locations to the number of spots used
+	public override void OnStartServer ()
+	{
+		base.OnStartServer ();
 		StartCoroutine (SpawnChests ()); // Start coroutine to spawn chests
-		}
 	}
 
-	IEnumerator SpawnChests() {
-		int currentIndex = 0; // Set number of chests index to zero
+	IEnumerator SpawnChests ()
+	{
+		while (true) {
+			if (GameObject.FindGameObjectsWithTag ("Chest").Length < 100 + GameController.allPlayers.Count * 2) {
+				Vector3 spawnLocation = GameController.FindSpawnPoint ();
 
-		while (true) { // Chest coroutine
-
-			if (spotUsed[currentIndex] == false){ //
-				GameObject chest = (GameObject)Instantiate (ChestPrefab, ChestSpawnLocations [currentIndex].position, transform.rotation); // Create and place a chest
+				GameObject chest = GameObject.Instantiate (ChestPrefab, spawnLocation, Quaternion.identity);
 				Chest chestScript = chest.GetComponent<Chest> ();
+				int chestLoot = Random.Range (25, 150);
 				chestScript.spoils = new Spoils () {
-					Gold = Random.Range(25, 250),
-					Fame = Random.Range(25, 250),
-					Powerups = new[] {(PowerUps) Random.Range(0,5)},
+					Gold = chestLoot,
+					Fame = chestLoot,
+					Powerups = new [] { Random.Range (0, 5) },
 				};
-				int current = currentIndex;
-				chestScript.OnDestroy += () => spotUsed [current] = false; // When a chest is destroyed
-				NetworkServer.Spawn (chest); // Spawn a chest object
-				spotUsed[currentIndex] = true; // 
+				NetworkServer.Spawn (chest);
+			} else {
+				yield return new WaitForSeconds (5f);
 			}
-
-			currentIndex += 1;
-			if (currentIndex >= spotUsed.Length) // If the current index is larger than the list of spawn points, then reset
-				currentIndex = 0; // reset the spawn location index to zero
-			
-			yield return new WaitForSeconds (2f); // Wait 2 seconds before calling waking the routine and checking for 
 		}
-
 	}
 }

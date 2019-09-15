@@ -36,7 +36,7 @@ public class LowPolyTerrainObjectsGenerator
 			var chunk = terrain.Chunks[i];
 
 			// Delete previous object root, if any
-			var objectsRoot = chunk.ChunkRoot.transform.FindChild("Objects Root");
+			var objectsRoot = chunk.ChunkRoot.transform.Find("Objects Root");
 			if (objectsRoot == null)
 			{
 				// Create a root for the objects
